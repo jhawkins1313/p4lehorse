@@ -2,7 +2,7 @@
   "name": "p4lehorse",
   "version": "1.0.0",
   "private": true,
-  "description": "P4LEHORSE — a digital space for the extreme and the fringe",
+  "description": "P4LEHORSE \u2014 a digital space for the extreme and the fringe",
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
@@ -10,8 +10,11 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/index.ts",
-    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types"
+    "seed": "npm run migrate && cross-env NODE_OPTIONS=--no-deprecation tsx src/seed/index.ts",
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
+    "predev": "npm run migrate"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "3.88.0",

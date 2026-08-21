@@ -8,14 +8,19 @@ export const revalidate = 60
 export const dynamicParams = true
 
 export async function generateStaticParams() {
-  const payload = await payloadClient()
-  const result = await payload.find({
-    collection: 'pages',
-    where: { _status: { equals: 'published' } },
-    limit: 50,
-    depth: 0,
-  })
-  return result.docs.map((page: any) => ({ slug: page.slug }))
+  // Empty at build time is fine. See the note in posts/[slug].
+  try {
+    const payload = await payloadClient()
+    const result = await payload.find({
+      collection: 'pages',
+      where: { _status: { equals: 'published' } },
+      limit: 50,
+      depth: 0,
+    })
+    return result.docs.map((page: any) => ({ slug: page.slug }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({

@@ -16,7 +16,7 @@ P4LEHORSE brand kit v1.1.
 ```bash
 npm install
 cp .env.example .env          # then set PAYLOAD_SECRET to anything long
-npm run seed                  # admin user, genres, two pages, three articles
+npm run seed                  # migrates, then adds an admin user and sample content
 npm run dev
 ```
 
@@ -26,6 +26,22 @@ The seed creates `seph@p4lehorse.com` with the password `changeme-p4lehorse`. Ch
 first time you sign in, or set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` before seeding.
 
 `npm run seed` is safe to re-run. It skips anything that already exists.
+
+### Schema changes
+
+Development runs the same migrations production does, so there is one schema path and no
+drift. After changing a collection:
+
+```bash
+npm run migrate:create <short-name>
+```
+
+Then add the new file to the list in `src/migrations/index.ts` and commit both. Payload runs
+pending migrations itself on startup, at build time and in the container, so nothing else has
+to happen at deploy.
+
+Skipping this step is the one way to break a deploy: the container will boot against a schema
+that does not have your new column.
 
 ---
 
@@ -74,7 +90,12 @@ unpredictable. That lives in `.ph-cover` and `.ph-feature__art` in `src/styles/s
 **Buttons are black text on magenta.** White on magenta measures 3.20:1 and fails AA. That
 comes straight from the kit's `components.css` and nothing here overrides it.
 
-The retired gold palette (`c9a227`, `e6c14a`, `1f1c12`) appears nowhere in this repo.
+The retired gold palette the kit tells you to grep for appears nowhere in this repo. Magenta
+is the only chromatic color in the interface, and the cyan cast in the masthead engraving
+belongs to that image, not to the UI.
+
+The one place an em dash survives is the `<title>` tag, because the kit's own meta spec
+writes it that way: `{Album Title} — {Artist} | P4LEHORSE`. Body copy never gets one.
 
 ### Diacritics
 
@@ -137,8 +158,8 @@ within five minutes.
 
 4. **Tunnel ingress and DNS** for the hostname, pointing at `http://p4lehorse:3000`.
 
-5. **First run** creates the database and shows the create-first-user screen at `/admin`.
-   To start with the sample content instead, run `npm run seed` inside the container.
+5. **First run** migrates the empty database itself and shows the create-first-user screen at
+   `/admin`. Nothing else to do.
 
 The image is public on GHCR, so the server needs no pull credentials. Pin a version tag in
 compose if you want to stop auto-deploys.
@@ -168,9 +189,10 @@ directory. Copy that directory and you have copied the site.
 
 SQLite was chosen because the box is a 16 GB laptop already running about ten containers, and
 a publication's read traffic is a poor reason to run a database server. Swapping to Postgres
-is a two-line change: install `@payloadcms/db-postgres`, replace `sqliteAdapter` in
-`src/payload.config.ts` with `postgresAdapter`, point `DATABASE_URI` at the new server. The
-schema and every collection stay as they are.
+means: install `@payloadcms/db-postgres`, replace `sqliteAdapter` in `src/payload.config.ts`
+with `postgresAdapter`, point `DATABASE_URI` at the new server, and regenerate the initial
+migration. Every collection stays exactly as it is. Neon is already in use for other projects
+on this server if you would rather not run another container.
 
 ---
 

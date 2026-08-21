@@ -19,8 +19,15 @@ export const revalidate = 60
 export const dynamicParams = true
 
 export async function generateStaticParams() {
-  const result = await getPosts({ limit: 100 })
-  return result.docs.map((post: any) => ({ slug: post.slug }))
+  // The Docker build renders against a throwaway database with no content in
+  // it. Returning nothing there is correct: every article is still reachable,
+  // Next just renders it on first request and caches it from then on.
+  try {
+    const result = await getPosts({ limit: 100 })
+    return result.docs.map((post: any) => ({ slug: post.slug }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({
