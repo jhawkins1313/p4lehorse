@@ -1,0 +1,65 @@
+/* ---------------------------------------------------------------------------
+   P4LEHORSE admin skin.
+
+   Light touch on purpose. Payload's dark theme is already close to the brand
+   ground, so this only pulls the accent from blue to magenta and puts Alte Haas
+   Grotesk on the chrome. Do not push it further: the admin is a tool, and an
+   editor staring at #FF2BD6 all day will hate you.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src:
+    url('/fonts/AlteHaasGrotesk-Regular.woff2') format('woff2'),
+    url('/fonts/AlteHaasGrotesk-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src:
+    url('/fonts/AlteHaasGrotesk-Bold.woff2') format('woff2'),
+    url('/fonts/AlteHaasGrotesk-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ph-accent: #ff2bd6;
+  --ph-accent-hi: #ff7be4;
+
+  --font-body:
+    'Alte Haas Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif;
+  --font-serif: var(--font-body);
+}
+
+html[data-theme='dark'] {
+  --theme-success-500: var(--ph-accent);
+}
+
+/* Links and the active nav item carry the brand color. */
+html[data-theme='dark'] {
+  a:not(.btn):not(.nav__link):hover {
+    color: var(--ph-accent-hi);
+  }
+
+  .nav__link--active,
+  .step-nav__last {
+    color: var(--ph-accent);
+  }
+}
+
+/* Focus rings, everywhere. */
+*:focus-visible {
+  outline: 2px solid var(--ph-accent-hi);
+  outline-offset: 2px;
+}
+
+/* The brand mark in the sidebar sits better with a little air under it. */
+.nav .nav__header {
+  padding-bottom: 0.5rem;
+}

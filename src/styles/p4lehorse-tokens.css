@@ -1,0 +1,244 @@
+/* ============================================================================
+   P4LEHORSE — DESIGN TOKENS
+   Version 1.0 · August 2026
+   ----------------------------------------------------------------------------
+   This is the single source of truth for the P4LEHORSE visual system. Load it
+   before any other stylesheet. Do not redefine these values elsewhere; if a
+   value needs to change, change it here.
+
+   Contains: webfont declarations, color, type scale, spacing, radii, borders,
+   shadows, motion, layout widths.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. TYPEFACE
+   Alte Haas Grotesk, self-hosted. Adjust the url() paths to match wherever the
+   /fonts directory ends up on the server. Keep the .woff2 first: every browser
+   the site cares about supports it, and .woff is only the fallback.
+
+   The face ships in Regular and Bold only. There is no Light, no Medium, no
+   Black. Do not let the browser fake the missing weights: font-synthesis is
+   switched off below, so anything that asks for weight 500 or 800 will simply
+   render as 400 or 700 rather than as a smeared approximation.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src: url('/fonts/AlteHaasGrotesk-Regular.woff2') format('woff2'),
+       url('/fonts/AlteHaasGrotesk-Regular.woff')  format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Alte Haas Grotesk';
+  src: url('/fonts/AlteHaasGrotesk-Bold.woff2') format('woff2'),
+       url('/fonts/AlteHaasGrotesk-Bold.woff')  format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+
+  /* -------------------------------------------------------------------------
+     2. COLOR
+     Approved system, v1. Magenta is the only chromatic color in the interface.
+     The cyan cast in the masthead engraving belongs to that image and is not
+     a UI color: never sample it, never introduce a second accent.
+     ------------------------------------------------------------------------- */
+
+  /* Base — true black, not charcoal, so the page matches the masthead ink. */
+  --ph-void:         #000000;   /* page background, the default ground        */
+  --ph-surface:      #0A0A0C;   /* cards, panels sitting on the void          */
+  --ph-surface-2:    #121216;   /* nested panels, table stripes, code blocks   */
+  --ph-elev:         #1A1A1F;   /* menus, popovers, hover fills               */
+  --ph-line:         #26262B;   /* default hairline border                    */
+  --ph-line-strong:  #3A3A42;   /* emphasized border, album-art frame         */
+
+  /* Text */
+  --ph-text:         #EDEDF0;   /* body and headings                          */
+  --ph-muted:        #A0A0AA;   /* bylines, captions, secondary metadata      */
+  --ph-dim:          #82828C;   /* timestamps, legal, lowest usable tier      */
+  --ph-bone:         #D8D4C8;   /* pull quotes only, the one warm neutral     */
+
+  /* Accent */
+  --ph-accent:       #FF2BD6;   /* links, active state, rules, the brand      */
+  --ph-accent-hi:    #FF7BE4;   /* hover and focus lift                       */
+  --ph-accent-deep:  #B0128F;   /* pressed state, decorative fills, never text */
+  --ph-accent-tint:  rgba(255, 43, 214, 0.12);  /* selection, tag fills       */
+  --ph-accent-glow:  rgba(255, 43, 214, 0.35);  /* focus ring, hover shadow   */
+
+  /* Semantic aliases. Prefer these in component CSS: they say what the color
+     is for, so a future palette revision touches only the block above. */
+  --ph-bg:              var(--ph-void);
+  --ph-bg-raised:       var(--ph-surface);
+  --ph-fg:              var(--ph-text);
+  --ph-fg-secondary:    var(--ph-muted);
+  --ph-fg-tertiary:     var(--ph-dim);
+  --ph-border:          var(--ph-line);
+  --ph-border-emphasis: var(--ph-line-strong);
+  --ph-link:            var(--ph-accent);
+  --ph-link-hover:      var(--ph-accent-hi);
+  --ph-focus:           var(--ph-accent-hi);
+
+  /* -------------------------------------------------------------------------
+     3. TYPOGRAPHY
+     One family, two weights. Hierarchy comes from size, case, and letter
+     spacing, not from a second typeface.
+     ------------------------------------------------------------------------- */
+
+  /* The fallback stack is not decoration. Alte Haas Grotesk carries 264 glyphs:
+     Latin-1 plus a few extras, and nothing for Romanian, Polish, Czech, Hungarian,
+     Turkish, Cyrillic or Greek. Band names in these scenes hit those gaps often, and
+     the stack below is what catches them. Do not shorten it. */
+  --ph-font: 'Alte Haas Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+             Helvetica, Arial, sans-serif;
+  --ph-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Fluid scale. Each step interpolates between a 360px and a 1280px viewport,
+     so nothing needs a media query to resize. */
+  --ph-text-xs:   0.75rem;                                  /* 12px, fixed    */
+  --ph-text-sm:   0.875rem;                                 /* 14px, fixed    */
+  --ph-text-base: 1.0625rem;                                /* 17px, fixed    */
+  --ph-text-lg:   clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --ph-text-xl:   clamp(1.375rem, 1.24rem + 0.6vw,  1.75rem);
+  --ph-text-2xl:  clamp(1.75rem,  1.52rem + 1.0vw,  2.5rem);
+  --ph-text-3xl:  clamp(2.25rem,  1.83rem + 1.85vw, 3.5rem);
+  --ph-text-4xl:  clamp(2.75rem,  1.97rem + 3.4vw,  5rem);
+
+  --ph-weight-regular: 400;
+  --ph-weight-bold:    700;
+
+  --ph-leading-tight:  1.05;   /* display headings                            */
+  --ph-leading-snug:   1.25;   /* headings, card titles                       */
+  --ph-leading-normal: 1.45;   /* UI text                                     */
+  --ph-leading-prose:  1.68;   /* review and article body                      */
+
+  /* Negative tracking on the big sizes keeps bold grotesk display type from
+     falling apart. Positive tracking is reserved for uppercase eyebrows. */
+  --ph-tracking-display: -0.03em;
+  --ph-tracking-tight:   -0.015em;
+  --ph-tracking-normal:  0;
+  --ph-tracking-wide:    0.08em;
+  --ph-tracking-eyebrow: 0.22em;
+
+  /* -------------------------------------------------------------------------
+     4. SPACE
+     4px base. Use the tokens, not raw pixel values.
+     ------------------------------------------------------------------------- */
+
+  --ph-space-1:  0.25rem;   /*  4px */
+  --ph-space-2:  0.5rem;    /*  8px */
+  --ph-space-3:  0.75rem;   /* 12px */
+  --ph-space-4:  1rem;      /* 16px */
+  --ph-space-5:  1.5rem;    /* 24px */
+  --ph-space-6:  2rem;      /* 32px */
+  --ph-space-7:  3rem;      /* 48px */
+  --ph-space-8:  4rem;      /* 64px */
+  --ph-space-9:  6rem;      /* 96px */
+
+  /* -------------------------------------------------------------------------
+     5. SHAPE, DEPTH, MOTION
+     Corners stay close to square. Separation between surfaces comes from
+     hairline borders, not from lighter fills or heavy drop shadows.
+     ------------------------------------------------------------------------- */
+
+  --ph-radius-none: 0;
+  --ph-radius-sm:   2px;
+  --ph-radius-md:   4px;
+  --ph-radius-lg:   8px;    /* cards, the largest radius the brand uses       */
+  --ph-radius-pill: 999px;  /* tags only                                      */
+
+  --ph-border-width: 1px;
+
+  --ph-shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.6);
+  --ph-shadow-md:   0 8px 24px rgba(0, 0, 0, 0.55);
+  --ph-shadow-lg:   0 16px 48px rgba(0, 0, 0, 0.65);
+  --ph-shadow-glow: 0 0 0 1px var(--ph-accent), 0 0 24px var(--ph-accent-glow);
+
+  --ph-focus-ring: 0 0 0 2px var(--ph-void), 0 0 0 4px var(--ph-accent-hi);
+
+  --ph-ease:        cubic-bezier(0.2, 0, 0.2, 1);
+  --ph-duration-1:  120ms;
+  --ph-duration-2:  200ms;
+  --ph-duration-3:  320ms;
+
+  /* -------------------------------------------------------------------------
+     6. LAYOUT
+     ------------------------------------------------------------------------- */
+
+  --ph-measure:      68ch;    /* max line length for article body            */
+  --ph-width-prose:  46rem;   /* single-column article container             */
+  --ph-width-page:   76rem;   /* site container, grids and listings          */
+  --ph-gutter:       clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --ph-header-h:     72px;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------------------
+   7. BASELINE
+   Minimal reset. Everything below is the ground the components assume.
+   --------------------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ph-bg);
+  color: var(--ph-fg);
+  font-family: var(--ph-font);
+  font-size: var(--ph-text-base);
+  font-weight: var(--ph-weight-regular);
+  line-height: var(--ph-leading-normal);
+  font-synthesis-weight: none;
+  font-synthesis-style: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--ph-accent-tint);
+  color: var(--ph-text);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ph-focus-ring);
+  border-radius: var(--ph-radius-sm);
+}
+
+a {
+  color: var(--ph-link);
+  text-decoration-color: var(--ph-accent-glow);
+  text-underline-offset: 0.18em;
+  transition: color var(--ph-duration-1) var(--ph-ease);
+}
+
+a:hover { color: var(--ph-link-hover); text-decoration-color: currentColor; }
+
+img, svg, iframe { max-width: 100%; }
+img { height: auto; border-style: none; }
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--ph-line);
+  margin: var(--ph-space-7) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

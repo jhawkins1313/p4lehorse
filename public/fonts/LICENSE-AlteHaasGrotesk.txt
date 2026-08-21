@@ -1,0 +1,36 @@
+ALTE HAAS GROTESK
+Copyright (c) 2007 Yann Le Coroller. All rights reserved.
+
+--- Original licence text, as distributed with the typeface ---
+
+Alte Haas Grotesk is a typeface that look like an helvetica printed in an
+old Muller-Brockmann Book.
+
+These fonts are freeware and can be distributed as long as they are
+together with this text file.
+
+I would appreciate very much to see what you have done with it anyway.
+
+yann le coroller
+www.yannlecoroller.com
+yann@lecoroller.com
+
+--- End of original licence text ---
+
+NOTE FOR THE P4LEHORSE BUILD
+
+The licence permits free distribution provided this text file travels with
+the font files. That condition is met inside this kit: keep this file in the
+/fonts directory.
+
+The .woff and .woff2 files in this directory were generated from the original
+.ttf files for web delivery. The originals are included unmodified alongside
+them. Serving webfont conversions of a freeware face is standard practice, but
+the licence predates webfonts and does not address them explicitly. If
+P4LEHORSE ever moves to paid advertising, print merchandise, or anything where
+licence exposure matters, email the designer at the address above. He is on
+record asking to see what people build with it, so it is a friendly email to
+send, not a difficult one.
+
+Do not host these files on a public CDN or an open directory that invites
+hotlinking by third parties. Serve them from the P4LEHORSE domain only.

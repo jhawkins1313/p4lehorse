@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------------
+# P4LEHORSE on owensfamily.
+#
+# Add this service to the existing `cloudflared` stack in Portainer, or deploy
+# it standalone with the external network declared below. Either way:
+#
+#   - no host ports, the tunnel reaches it by service name on the shared network
+#   - all state in /srv/apps/p4lehorse-data, bind-mounted to /data
+#   - config from /srv/apps/p4lehorse/.env, never from this file
+#
+# Tunnel ingress for the public hostname points at:  http://p4lehorse:3000
+# ---------------------------------------------------------------------------
+
+services:
+  p4lehorse:
+    image: ghcr.io/bigguyowens/p4lehorse:latest
+    restart: unless-stopped
+    env_file:
+      - /srv/apps/p4lehorse/.env
+    environment:
+      # These two are fixed by the image layout, so they live here rather than
+      # in .env where someone might change one and not the other.
+      DATABASE_URI: file:/data/p4lehorse.db
+      MEDIA_DIR: /data/media
+    volumes:
+      - /srv/apps/p4lehorse-data:/data
+    networks:
+      - cloudflared_default
+
+networks:
+  cloudflared_default:
+    external: true

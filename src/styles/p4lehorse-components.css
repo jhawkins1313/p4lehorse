@@ -1,0 +1,614 @@
+/* ============================================================================
+   P4LEHORSE — COMPONENTS
+   Version 1.0 · August 2026
+   Requires p4lehorse-tokens.css to be loaded first.
+   ----------------------------------------------------------------------------
+   Every class is prefixed .ph-. These are reference implementations: match the
+   look, not necessarily the markup. If the site is built on a framework, port
+   the values and keep the class names for anything that ships as raw HTML
+   (embed blocks, newsletter templates, one-off landing pages).
+   ============================================================================ */
+
+/* --- Layout ---------------------------------------------------------------- */
+
+.ph-container {
+  width: 100%;
+  max-width: var(--ph-width-page);
+  margin-inline: auto;
+  padding-inline: var(--ph-gutter);
+}
+
+.ph-container--prose { max-width: var(--ph-width-prose); }
+
+.ph-section { padding-block: var(--ph-space-8); }
+
+/* The one decorative flourish in the system. Use it to close a major section
+   or to top and tail a feature block. Never more than twice on a screen. */
+.ph-rule {
+  height: 2px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--ph-accent-deep) 28%,
+    var(--ph-accent) 50%,
+    var(--ph-accent-deep) 72%,
+    transparent 100%);
+}
+
+.ph-rule--hair { height: 1px; background: var(--ph-line); }
+
+/* --- Wordmark and masthead -------------------------------------------------- */
+
+/* The wordmark is set in Alte Haas Grotesk Bold, uppercase, tracked in to
+   -0.03em. If the SVG is unavailable this reproduces it in live text, which is
+   what the site header should use anyway: it stays crisp, it is selectable,
+   and it costs no extra request. */
+.ph-wordmark {
+  display: inline-block;
+  font-family: var(--ph-font);
+  font-weight: var(--ph-weight-bold);
+  font-size: var(--ph-text-2xl);
+  line-height: 1;
+  letter-spacing: var(--ph-tracking-display);
+  text-transform: uppercase;
+  color: var(--ph-accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ph-wordmark:hover { color: var(--ph-accent-hi); }
+.ph-wordmark--light { color: var(--ph-text); }
+.ph-wordmark--jumbo { font-size: var(--ph-text-4xl); }
+
+/* Full-bleed masthead using the engraving. The image already contains the
+   wordmark, so do not lay live type over it. */
+.ph-masthead {
+  display: block;
+  width: 100%;
+  background: var(--ph-void);
+  border-bottom: 1px solid var(--ph-line);
+}
+
+.ph-masthead img {
+  display: block;
+  width: 100%;
+  max-width: 1592px;
+  margin-inline: auto;
+  height: auto;
+}
+
+/* On a homepage the full 1.92:1 masthead runs about 660px tall at desktop
+   width, which pushes everything below the fold. Use the compact variant on
+   interior pages, or anywhere the masthead is a header rather than the hero.
+   The crop is anchored slightly below center so the wordmark survives it. */
+.ph-masthead--compact img {
+  aspect-ratio: 4 / 1;
+  object-fit: cover;
+  object-position: center 58%;
+}
+
+/* --- Site header ------------------------------------------------------------ */
+
+.ph-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: var(--ph-header-h);
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid var(--ph-line);
+}
+
+.ph-header__inner {
+  width: 100%;
+  max-width: var(--ph-width-page);
+  margin-inline: auto;
+  padding-inline: var(--ph-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ph-space-5);
+}
+
+.ph-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--ph-space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ph-nav a {
+  font-size: var(--ph-text-xs);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ph-muted);
+  text-decoration: none;
+  padding-block: var(--ph-space-2);
+  border-bottom: 2px solid transparent;
+  transition: color var(--ph-duration-1) var(--ph-ease),
+              border-color var(--ph-duration-1) var(--ph-ease);
+}
+
+.ph-nav a:hover { color: var(--ph-text); }
+
+.ph-nav a[aria-current="page"] {
+  color: var(--ph-text);
+  border-bottom-color: var(--ph-accent);
+}
+
+/* --- Type utilities --------------------------------------------------------- */
+
+.ph-eyebrow {
+  margin: 0 0 var(--ph-space-3);
+  font-size: var(--ph-text-xs);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ph-accent);
+}
+
+.ph-eyebrow--muted { color: var(--ph-muted); }
+
+.ph-display {
+  margin: 0 0 var(--ph-space-4);
+  font-size: var(--ph-text-4xl);
+  font-weight: var(--ph-weight-bold);
+  line-height: var(--ph-leading-tight);
+  letter-spacing: var(--ph-tracking-display);
+  text-transform: uppercase;
+  color: var(--ph-text);
+  text-wrap: balance;
+}
+
+.ph-h1 {
+  margin: 0 0 var(--ph-space-4);
+  font-size: var(--ph-text-3xl);
+  font-weight: var(--ph-weight-bold);
+  line-height: var(--ph-leading-tight);
+  letter-spacing: var(--ph-tracking-display);
+  color: var(--ph-text);
+  text-wrap: balance;
+}
+
+.ph-h2 {
+  margin: var(--ph-space-7) 0 var(--ph-space-3);
+  font-size: var(--ph-text-2xl);
+  font-weight: var(--ph-weight-bold);
+  line-height: var(--ph-leading-snug);
+  letter-spacing: var(--ph-tracking-tight);
+  color: var(--ph-text);
+}
+
+.ph-h3 {
+  margin: var(--ph-space-6) 0 var(--ph-space-2);
+  font-size: var(--ph-text-xl);
+  font-weight: var(--ph-weight-bold);
+  line-height: var(--ph-leading-snug);
+  letter-spacing: var(--ph-tracking-tight);
+  color: var(--ph-text);
+}
+
+.ph-lede {
+  font-size: var(--ph-text-lg);
+  line-height: var(--ph-leading-prose);
+  color: var(--ph-muted);
+  max-width: var(--ph-measure);
+}
+
+.ph-meta {
+  font-size: var(--ph-text-sm);
+  color: var(--ph-muted);
+}
+
+.ph-meta__dim { color: var(--ph-dim); }
+
+/* --- Article body ----------------------------------------------------------- */
+
+.ph-prose {
+  max-width: var(--ph-measure);
+  font-size: var(--ph-text-base);
+  line-height: var(--ph-leading-prose);
+  color: var(--ph-text);
+}
+
+.ph-prose p { margin: 0 0 var(--ph-space-5); }
+
+.ph-prose h2 {
+  margin: var(--ph-space-7) 0 var(--ph-space-3);
+  font-size: var(--ph-text-2xl);
+  font-weight: var(--ph-weight-bold);
+  line-height: var(--ph-leading-snug);
+  letter-spacing: var(--ph-tracking-tight);
+}
+
+.ph-prose h3 {
+  margin: var(--ph-space-6) 0 var(--ph-space-2);
+  font-size: var(--ph-text-xl);
+  font-weight: var(--ph-weight-bold);
+  line-height: var(--ph-leading-snug);
+}
+
+/* House style italicizes album titles and quotes track titles. Style them
+   here so the rule is enforced by the CSS rather than by memory. */
+.ph-prose em,
+.ph-prose cite,
+.ph-album {
+  font-style: italic;
+  font-synthesis-style: auto; /* the face has no true italic; allow the slant */
+  color: inherit;
+}
+
+.ph-prose a { font-weight: var(--ph-weight-bold); }
+
+.ph-prose ul, .ph-prose ol {
+  margin: 0 0 var(--ph-space-5);
+  padding-left: var(--ph-space-5);
+}
+
+.ph-prose li { margin-bottom: var(--ph-space-2); }
+.ph-prose li::marker { color: var(--ph-accent); }
+
+/* Pull quote. The only place --ph-bone appears. */
+.ph-quote {
+  margin: var(--ph-space-6) 0;
+  padding: var(--ph-space-2) 0 var(--ph-space-2) var(--ph-space-5);
+  border-left: 2px solid var(--ph-accent);
+  font-size: var(--ph-text-lg);
+  font-style: italic;
+  line-height: var(--ph-leading-prose);
+  color: var(--ph-bone);
+}
+
+.ph-quote cite {
+  display: block;
+  margin-top: var(--ph-space-3);
+  font-size: var(--ph-text-sm);
+  font-style: normal;
+  letter-spacing: var(--ph-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ph-dim);
+}
+
+.ph-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ph-space-3);
+  margin-bottom: var(--ph-space-6);
+  padding-bottom: var(--ph-space-5);
+  border-bottom: 1px solid var(--ph-line);
+  font-size: var(--ph-text-sm);
+  color: var(--ph-muted);
+}
+
+.ph-byline strong { color: var(--ph-text); font-weight: var(--ph-weight-bold); }
+.ph-byline time { color: var(--ph-dim); }
+
+/* --- Buttons ---------------------------------------------------------------- */
+
+.ph-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ph-space-2);
+  padding: var(--ph-space-3) var(--ph-space-5);
+  border: 1px solid transparent;
+  border-radius: var(--ph-radius-md);
+  font-family: var(--ph-font);
+  font-size: var(--ph-text-sm);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-wide);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--ph-duration-1) var(--ph-ease),
+              color var(--ph-duration-1) var(--ph-ease),
+              border-color var(--ph-duration-1) var(--ph-ease);
+}
+
+/* Primary. Black text on magenta, 6.57:1. Never white text here: it lands at
+   3.20:1 and fails AA for anything under 24px. */
+.ph-btn--primary {
+  background: var(--ph-accent);
+  color: var(--ph-void);
+}
+
+.ph-btn--primary:hover { background: var(--ph-accent-hi); color: var(--ph-void); }
+.ph-btn--primary:active { background: var(--ph-accent-deep); color: var(--ph-text); }
+
+.ph-btn--ghost {
+  background: transparent;
+  color: var(--ph-text);
+  border-color: var(--ph-line-strong);
+}
+
+.ph-btn--ghost:hover {
+  border-color: var(--ph-accent);
+  color: var(--ph-accent);
+}
+
+.ph-btn--quiet {
+  background: transparent;
+  color: var(--ph-muted);
+  padding-inline: var(--ph-space-2);
+}
+
+.ph-btn--quiet:hover { color: var(--ph-text); }
+
+/* --- Tags ------------------------------------------------------------------- */
+
+.ph-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ph-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ph-tag {
+  display: inline-block;
+  padding: 0.28rem var(--ph-space-3);
+  border: 1px solid var(--ph-line);
+  border-radius: var(--ph-radius-pill);
+  background: var(--ph-surface);
+  font-size: var(--ph-text-xs);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ph-muted);
+  text-decoration: none;
+}
+
+.ph-tag:hover {
+  background: var(--ph-accent-tint);
+  border-color: var(--ph-accent);
+  color: var(--ph-accent);
+}
+
+/* Section tags. Extreme and Fringe are the two standing sections; give them a
+   consistent treatment so readers learn them by sight. */
+.ph-tag--extreme { border-color: var(--ph-accent); color: var(--ph-accent); }
+.ph-tag--fringe  { border-color: var(--ph-line-strong); color: var(--ph-bone); }
+
+/* --- Cards ------------------------------------------------------------------ */
+
+.ph-grid {
+  display: grid;
+  gap: var(--ph-space-5);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+
+.ph-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ph-surface);
+  border: 1px solid var(--ph-line);
+  border-radius: var(--ph-radius-lg);
+  overflow: hidden;
+  transition: border-color var(--ph-duration-2) var(--ph-ease),
+              transform var(--ph-duration-2) var(--ph-ease);
+}
+
+.ph-card:hover {
+  border-color: var(--ph-line-strong);
+  transform: translateY(-2px);
+}
+
+.ph-card:focus-within { border-color: var(--ph-accent); }
+
+/* Album art is framed in a neutral border, never magenta. Cover colors are
+   unpredictable and a magenta frame will fight roughly half of them. */
+.ph-card__art {
+  display: block;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  object-fit: cover;
+  background: var(--ph-surface-2);
+  border-bottom: 1px solid var(--ph-line-strong);
+}
+
+.ph-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ph-space-2);
+  padding: var(--ph-space-5);
+}
+
+.ph-card__kicker {
+  font-size: var(--ph-text-xs);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ph-accent);
+}
+
+.ph-card__title {
+  margin: 0;
+  font-size: var(--ph-text-lg);
+  font-weight: var(--ph-weight-bold);
+  line-height: var(--ph-leading-snug);
+  letter-spacing: var(--ph-tracking-tight);
+  color: var(--ph-text);
+  text-wrap: balance;
+}
+
+.ph-card__title a { color: inherit; text-decoration: none; }
+.ph-card__title a:hover { color: var(--ph-accent); }
+
+.ph-card__artist {
+  font-size: var(--ph-text-sm);
+  color: var(--ph-muted);
+}
+
+.ph-card__excerpt {
+  margin: 0;
+  font-size: var(--ph-text-sm);
+  line-height: var(--ph-leading-normal);
+  color: var(--ph-muted);
+}
+
+.ph-card__footer {
+  margin-top: auto;
+  padding-top: var(--ph-space-3);
+  font-size: var(--ph-text-xs);
+  letter-spacing: var(--ph-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ph-dim);
+}
+
+/* --- Forms ------------------------------------------------------------------ */
+
+.ph-field {
+  display: flex;
+  gap: var(--ph-space-2);
+  flex-wrap: wrap;
+}
+
+.ph-input {
+  flex: 1 1 16rem;
+  padding: var(--ph-space-3) var(--ph-space-4);
+  background: var(--ph-surface-2);
+  border: 1px solid var(--ph-line-strong);
+  border-radius: var(--ph-radius-md);
+  color: var(--ph-text);
+  font-family: var(--ph-font);
+  font-size: var(--ph-text-base);
+}
+
+.ph-input::placeholder { color: var(--ph-dim); }
+.ph-input:focus { border-color: var(--ph-accent); outline: none; }
+
+.ph-label {
+  display: block;
+  margin-bottom: var(--ph-space-2);
+  font-size: var(--ph-text-xs);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ph-muted);
+}
+
+/* --- Bandcamp embed --------------------------------------------------------- */
+
+/* Bandcamp iframes cannot inherit CSS. The bgcol and linkcol parameters live
+   in the iframe src and must be kept in sync by hand:
+       bgcol=000000   linkcol=ff2bd6                                          */
+.ph-bandcamp {
+  max-width: var(--ph-width-prose);
+  margin: var(--ph-space-6) auto;
+  background: var(--ph-void);
+  border: 1px solid var(--ph-line);
+  border-radius: var(--ph-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--ph-shadow-md);
+}
+
+.ph-bandcamp__inner { padding: var(--ph-space-5) var(--ph-space-5) var(--ph-space-4); }
+
+.ph-bandcamp__player {
+  border: 1px solid var(--ph-line-strong);
+  border-radius: var(--ph-radius-md);
+  background: var(--ph-void);
+  padding: 6px;
+}
+
+.ph-bandcamp__player iframe {
+  display: block;
+  border: 0;
+  width: 100%;
+  height: 120px;
+}
+
+.ph-bandcamp__footer { margin: var(--ph-space-4) 0 0; text-align: right; }
+
+.ph-bandcamp__footer a {
+  font-size: var(--ph-text-xs);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-wide);
+  text-transform: uppercase;
+  color: var(--ph-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ph-accent-glow);
+  padding-bottom: 2px;
+}
+
+.ph-bandcamp__footer a:hover {
+  color: var(--ph-accent-hi);
+  border-bottom-color: var(--ph-accent-hi);
+}
+
+/* --- Footer ----------------------------------------------------------------- */
+
+.ph-footer {
+  margin-top: var(--ph-space-9);
+  padding-block: var(--ph-space-7);
+  border-top: 1px solid var(--ph-line);
+  background: var(--ph-void);
+  font-size: var(--ph-text-sm);
+  color: var(--ph-muted);
+}
+
+.ph-footer__grid {
+  display: grid;
+  gap: var(--ph-space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.ph-footer h4 {
+  margin: 0 0 var(--ph-space-3);
+  font-size: var(--ph-text-xs);
+  font-weight: var(--ph-weight-bold);
+  letter-spacing: var(--ph-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--ph-dim);
+}
+
+.ph-footer ul { list-style: none; margin: 0; padding: 0; }
+.ph-footer li { margin-bottom: var(--ph-space-2); }
+.ph-footer a { color: var(--ph-muted); text-decoration: none; }
+.ph-footer a:hover { color: var(--ph-accent); }
+
+.ph-footer__legal {
+  margin-top: var(--ph-space-6);
+  padding-top: var(--ph-space-5);
+  border-top: 1px solid var(--ph-line);
+  font-size: var(--ph-text-xs);
+  color: var(--ph-dim);
+}
+
+/* --- Utilities -------------------------------------------------------------- */
+
+.ph-accent { color: var(--ph-accent); }
+.ph-muted  { color: var(--ph-muted); }
+.ph-center { text-align: center; }
+
+.ph-visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ph-skip-link {
+  position: absolute;
+  left: var(--ph-space-4);
+  top: -100%;
+  z-index: 100;
+  padding: var(--ph-space-3) var(--ph-space-4);
+  background: var(--ph-accent);
+  color: var(--ph-void);
+  font-weight: var(--ph-weight-bold);
+  border-radius: var(--ph-radius-md);
+}
+
+.ph-skip-link:focus { top: var(--ph-space-4); }

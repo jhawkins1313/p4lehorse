@@ -1,0 +1,236 @@
+/* ============================================================================
+   P4LEHORSE — SITE ADDITIONS
+   Everything here is additive to the brand kit. It introduces no new colors,
+   no second typeface, and no new radii. If something needs a value, it takes it
+   from a token. Loaded after tokens.css and components.css.
+   ============================================================================ */
+
+/* --- Article header --------------------------------------------------------- */
+
+.ph-article-head {
+  padding-top: var(--ph-space-8);
+}
+
+/* Album art on a review. Framed in the neutral, never in magenta: cover colors
+   are unpredictable and a magenta frame fights half of them. */
+.ph-cover {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 1px solid var(--ph-line-strong);
+  border-radius: var(--ph-radius-md);
+  background: var(--ph-surface-2);
+}
+
+.ph-record {
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: var(--ph-space-6);
+  align-items: start;
+  margin-block: var(--ph-space-6);
+  padding-block: var(--ph-space-5);
+  border-top: 1px solid var(--ph-line);
+  border-bottom: 1px solid var(--ph-line);
+}
+
+@media (max-width: 46rem) {
+  .ph-record {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ph-record dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--ph-space-2) var(--ph-space-5);
+  font-size: var(--ph-text-sm);
+}
+
+.ph-record dt {
+  color: var(--ph-dim);
+  text-transform: uppercase;
+  letter-spacing: var(--ph-tracking-wide);
+  font-size: var(--ph-text-xs);
+  align-self: center;
+}
+
+.ph-record dd {
+  margin: 0;
+  color: var(--ph-text);
+}
+
+/* --- Featured article ------------------------------------------------------- */
+
+.ph-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--ph-space-7);
+  align-items: center;
+}
+
+@media (max-width: 56rem) {
+  .ph-feature {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ph-space-5);
+  }
+}
+
+.ph-feature__art {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 1px solid var(--ph-line-strong);
+  border-radius: var(--ph-radius-lg);
+  background: var(--ph-surface-2);
+}
+
+.ph-feature h2 {
+  margin: var(--ph-space-3) 0 var(--ph-space-4);
+}
+
+.ph-feature h2 a {
+  color: var(--ph-text);
+  text-decoration: none;
+}
+
+.ph-feature h2 a:hover {
+  color: var(--ph-accent);
+}
+
+/* --- Section intro ---------------------------------------------------------- */
+
+.ph-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--ph-space-5);
+  flex-wrap: wrap;
+}
+
+.ph-section-head h2 {
+  margin: 0;
+}
+
+/* --- Pagination ------------------------------------------------------------- */
+
+.ph-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ph-space-4);
+  margin-top: var(--ph-space-8);
+}
+
+.ph-pager__status {
+  color: var(--ph-dim);
+  font-size: var(--ph-text-sm);
+}
+
+/* --- Search ----------------------------------------------------------------- */
+
+.ph-search-form {
+  display: flex;
+  gap: var(--ph-space-3);
+  margin-block: var(--ph-space-6);
+}
+
+.ph-search-form .ph-input {
+  flex: 1 1 auto;
+}
+
+.ph-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ph-line);
+}
+
+.ph-results li {
+  padding-block: var(--ph-space-5);
+  border-bottom: 1px solid var(--ph-line);
+}
+
+.ph-results h3 {
+  margin: 0 0 var(--ph-space-2);
+  font-size: var(--ph-text-lg);
+  line-height: var(--ph-leading-snug);
+}
+
+.ph-results h3 a {
+  color: var(--ph-text);
+  text-decoration: none;
+}
+
+.ph-results h3 a:hover {
+  color: var(--ph-accent);
+}
+
+.ph-results p {
+  margin: 0;
+  color: var(--ph-muted);
+  font-size: var(--ph-text-sm);
+}
+
+/* --- Author note ------------------------------------------------------------ */
+
+.ph-author {
+  display: flex;
+  gap: var(--ph-space-4);
+  align-items: flex-start;
+  margin-top: var(--ph-space-8);
+  padding-top: var(--ph-space-5);
+  border-top: 1px solid var(--ph-line);
+}
+
+.ph-author img {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--ph-radius-pill);
+  object-fit: cover;
+  border: 1px solid var(--ph-line-strong);
+}
+
+.ph-author p {
+  margin: 0;
+  color: var(--ph-muted);
+  font-size: var(--ph-text-sm);
+}
+
+.ph-author strong {
+  display: block;
+  color: var(--ph-text);
+  font-size: var(--ph-text-base);
+  margin-bottom: var(--ph-space-1);
+}
+
+/* --- Prose blocks inserted by the editor ------------------------------------ */
+
+.ph-prose .ph-bandcamp,
+.ph-prose .ph-quote {
+  margin-block: var(--ph-space-7);
+}
+
+.ph-prose figure.ph-bandcamp {
+  margin-inline: 0;
+}
+
+.ph-prose img {
+  border-radius: var(--ph-radius-md);
+  border: 1px solid var(--ph-line);
+}
+
+/* --- Misc ------------------------------------------------------------------- */
+
+.ph-stack > * + * {
+  margin-top: var(--ph-space-4);
+}
+
+.ph-error-page {
+  min-height: 60vh;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
