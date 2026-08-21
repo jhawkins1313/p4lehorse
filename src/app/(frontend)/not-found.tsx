@@ -13,7 +13,7 @@ export default function NotFound() {
         </p>
         <p style={{ marginTop: 'var(--ph-space-6)' }}>
           <Link className="ph-btn ph-btn--primary" href="/reviews">
-            Read the review
+            Latest reviews
           </Link>{' '}
           <Link className="ph-btn ph-btn--ghost" href="/">
             Home
