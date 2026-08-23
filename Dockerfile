@@ -27,12 +27,19 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# The build imports payload.config.ts, which reads these. They only need to be
-# present, not correct: nothing is baked into the output. Real values arrive as
-# runtime env vars from /srv/apps/p4lehorse/.env.
+# These two only need to be present, not correct. Nothing about them survives
+# into the image: the secret is never read at build, and the database here is a
+# throwaway that Payload migrates just so pages can render against real tables.
 ENV PAYLOAD_SECRET=build-time-placeholder
 ENV DATABASE_URI=file:/tmp/build.db
-ENV NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+
+# This one is different, and getting it wrong is silent. Next resolves
+# metadataBase, sitemap.xml, robots.txt and the RSS channel link at BUILD time
+# and bakes the absolute URLs into the prerendered output. A runtime env var
+# cannot fix them afterwards. Point it at the real public origin, or every
+# og:image a scraper sees will be a localhost URL.
+ARG NEXT_PUBLIC_SERVER_URL=https://p4lehorse.com
+ENV NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
 
 RUN npm run build
 

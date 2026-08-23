@@ -178,10 +178,28 @@ directory. Copy that directory and you have copied the site.
 | `PAYLOAD_SECRET` | Signs auth cookies. Changing it logs everyone out. |
 | `DATABASE_URI` | SQLite file. `file:/data/p4lehorse.db` in production. |
 | `MEDIA_DIR` | Upload directory. `/data/media` in production. |
-| `NEXT_PUBLIC_SERVER_URL` | Public origin. Used for og:image, RSS, sitemap, canonicals. No trailing slash. |
+| `NEXT_PUBLIC_SERVER_URL` | Public origin. Used for og:image, RSS, sitemap, canonicals. No trailing slash. **Also a build arg, see below.** |
 | `PORT` | Internal listen port. Default 3000. |
 | `RESEND_API_KEY` | Optional. Without it, mail is logged to the console. |
 | `EMAIL_FROM` | Optional. From address for outbound mail. |
+
+### The one that has to be right at build time
+
+`NEXT_PUBLIC_SERVER_URL` is not only a runtime variable. Next resolves `metadataBase`,
+`sitemap.xml`, `robots.txt` and the RSS channel link while it prerenders, and bakes the
+absolute URLs into the output. Setting the env var on the container afterwards does not
+correct them.
+
+So it is a Docker build arg, defaulting to `https://p4lehorse.com`, and the Actions workflow
+passes it explicitly. If the site ever moves, change it in **both** places and rebuild.
+
+This fails silently. Nothing errors; the pages just serve `http://localhost:3000/...` as their
+`og:image`, which every social scraper will fail to fetch. After any change to the hostname,
+check:
+
+```bash
+curl -s https://<host>/robots.txt | grep Sitemap
+```
 
 ---
 
