@@ -41,7 +41,15 @@ ENV DATABASE_URI=file:/tmp/build.db
 ARG NEXT_PUBLIC_SERVER_URL=https://p4lehorse.com
 ENV NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
 
-RUN npm run build
+# Migrate first, in one process, on purpose.
+#
+# Next prerenders with several workers and each one initialises Payload, which
+# means each one checks for pending migrations. Against a single empty SQLite
+# file they race, and the loser dies on "table posts already exists". It is
+# intermittent: the build passes or fails depending on which worker gets there
+# first. Applying the migration up front leaves nothing pending, so every worker
+# no-ops and the race cannot happen.
+RUN npx payload migrate && npm run build
 
 # --- runtime ----------------------------------------------------------------
 FROM node:22-bookworm-slim AS runner
