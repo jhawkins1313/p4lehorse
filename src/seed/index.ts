@@ -113,10 +113,10 @@ const run = async () => {
     title: 'About',
     slug: 'about',
     eyebrow: 'The publication',
-    lede: 'P4LEHORSE is a digital space for the extreme and the fringe. It exists for artists doing serious work at the edges of music who get almost no press for doing it.',
+    lede: 'P4LEHORSE is a digital space for the extreme and the fringe.',
     content: doc([
       p(
-        'Extreme is everything metal and hardcore. Fringe is everything alternative, synth, post-punk, shoegaze, and the strange lands in between.',
+        'Extreme is everything metal and hardcore. Fringe is everything alternative, synth, post-punk, shoegaze, and the strange lands in between. It exists for artists doing serious work at the edges of music who get almost no press for doing it.',
       ),
       p(
         'Our name comes from an old vision of the end of things. We are more interested in what stands on the other side of it.',
