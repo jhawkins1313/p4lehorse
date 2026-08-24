@@ -38,9 +38,12 @@ export const Bandcamp = ({
         )}
 
         <div className="ph-bandcamp__player">
-          <iframe src={bandcampEmbedSrc(albumId, trackId)} loading="lazy" title={title}>
-            <a href={url || '#'}>{label || 'Listen on Bandcamp'}</a>
-          </iframe>
+          {/* Nothing goes inside the iframe. HTML5 does not take fallback
+              content there: the parser drops any children, so React renders an
+              element on the server that is missing from the client DOM and
+              hydration fails on every page with a player. The footer link is
+              the way out to the album. */}
+          <iframe src={bandcampEmbedSrc(albumId, trackId)} loading="lazy" title={title} />
         </div>
 
         {url && (

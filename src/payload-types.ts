@@ -199,7 +199,7 @@ export interface Post {
      */
     trackId?: string | null;
     /**
-     * The public album page, e.g. https://artist.bandcamp.com/album/record-name. Used for the fallback link and the "Hear the full album" line.
+     * The public album page, e.g. https://artist.bandcamp.com/album/record-name. Used for the "Hear the full album" line under the player.
      */
     url?: string | null;
     /**

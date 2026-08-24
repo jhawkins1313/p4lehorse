@@ -28,7 +28,7 @@ export const BandcampBlock: Block = {
       name: 'url',
       type: 'text',
       required: true,
-      admin: { description: 'Public album page, used for the fallback link.' },
+      admin: { description: 'Public album page, used for the "Hear the full album" line under the player.' },
     },
     {
       name: 'label',
