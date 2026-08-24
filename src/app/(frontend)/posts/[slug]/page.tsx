@@ -215,11 +215,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               </div>
             )}
           </div>
-        </section>
 
-        {post.bandcamp?.albumId && (
-          <section className="ph-section">
-            <div className="ph-container">
+          {/* The Pick closes the review it belongs to, so it stays inside the
+              article section. In its own ph-section the two sets of block
+              padding stacked up and left it 160px clear of the byline. */}
+          {post.bandcamp?.albumId && (
+            <div className="ph-container ph-article-pick">
               <Bandcamp
                 albumId={post.bandcamp.albumId}
                 trackId={post.bandcamp.trackId}
@@ -232,8 +233,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 }
               />
             </div>
-          </section>
-        )}
+          )}
+        </section>
       </article>
 
       {related.docs.length > 0 && (
