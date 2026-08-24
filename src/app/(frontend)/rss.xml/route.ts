@@ -1,5 +1,5 @@
 import { getPosts } from '../../../lib/queries'
-import { absoluteUrl, SERVER_URL } from '../../../lib/site'
+import { absoluteUrl, FORMAT_LABELS, SERVER_URL } from '../../../lib/site'
 
 export const revalidate = 300
 
@@ -29,7 +29,7 @@ export async function GET() {
       <guid isPermaLink="true">${url}</guid>
       <pubDate>${new Date(post.publishedAt || post.createdAt).toUTCString()}</pubDate>
       <description>${escape(post.excerpt)}</description>
-      <category>${escape(post.section === 'extreme' ? 'Extreme' : 'Fringe')}</category>${
+      <category>${escape(FORMAT_LABELS[post.format] || '')}</category>${
         image ? `\n      <enclosure url="${absoluteUrl(image)}" type="image/jpeg" />` : ''
       }
     </item>`

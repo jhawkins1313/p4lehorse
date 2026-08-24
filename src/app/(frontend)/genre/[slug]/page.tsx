@@ -49,7 +49,7 @@ export default async function GenrePage({
 
   return (
     <Listing
-      eyebrow={genre.section === 'extreme' ? 'Extreme' : 'Fringe'}
+      eyebrow="Genre"
       title={genre.name}
       lede={genre.description}
       posts={result.docs}

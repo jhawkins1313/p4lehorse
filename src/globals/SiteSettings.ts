@@ -47,7 +47,7 @@ export const SiteSettings: GlobalConfig = {
               maxLength: 500,
               validate: noEmDash,
               defaultValue:
-                'Extreme is everything metal and hardcore. Fringe is everything alternative, synth, post-punk, shoegaze, and the strange lands in between. We exist for artists doing serious work at the edges of music who get almost no press for doing it.',
+                'Album reviews and interviews covering metal, hardcore, synth, post-punk, shoegaze, and the strange lands in between. We exist for artists doing serious work at the edges of music who get almost no press for doing it.',
             },
           ],
         },

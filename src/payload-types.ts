@@ -208,10 +208,6 @@ export interface Post {
     quote?: string | null;
   };
   format: 'review' | 'interview' | 'feature' | 'retrospective' | 'roundup';
-  /**
-   * Extreme: metal and hardcore. Fringe: everything else at the edges.
-   */
-  section: 'extreme' | 'fringe';
   genres?: (number | Genre)[] | null;
   author?: (number | null) | User;
   /**
@@ -344,10 +340,6 @@ export interface Genre {
    * Leave blank and it fills itself in from the title.
    */
   slug?: string | null;
-  /**
-   * Extreme is everything metal and hardcore. Fringe is everything alternative, synth, post-punk, shoegaze, and the strange lands in between.
-   */
-  section: 'extreme' | 'fringe';
   /**
    * One or two sentences. Shown at the top of the genre page.
    */
@@ -571,7 +563,6 @@ export interface PostsSelect<T extends boolean = true> {
         quote?: T;
       };
   format?: T;
-  section?: T;
   genres?: T;
   author?: T;
   publishedAt?: T;
@@ -608,7 +599,6 @@ export interface ArtistsSelect<T extends boolean = true> {
 export interface GenresSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
-  section?: T;
   description?: T;
   updatedAt?: T;
   createdAt?: T;

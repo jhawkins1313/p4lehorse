@@ -13,7 +13,7 @@ export const Posts: CollectionConfig = {
   labels: { singular: 'Article', plural: 'Articles' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'format', 'section', 'publishedAt', '_status'],
+    defaultColumns: ['title', 'format', 'publishedAt', '_status'],
     group: 'Content',
     description:
       'Album reviews, interviews, scene features, retrospectives and roundups. There is no news desk.',
@@ -193,20 +193,6 @@ export const Posts: CollectionConfig = {
         { label: 'Roundup', value: 'roundup' },
       ],
       admin: { position: 'sidebar' },
-    },
-    {
-      name: 'section',
-      type: 'select',
-      required: true,
-      defaultValue: 'extreme',
-      options: [
-        { label: 'Extreme', value: 'extreme' },
-        { label: 'Fringe', value: 'fringe' },
-      ],
-      admin: {
-        position: 'sidebar',
-        description: 'Extreme: metal and hardcore. Fringe: everything else at the edges.',
-      },
     },
     {
       name: 'genres',

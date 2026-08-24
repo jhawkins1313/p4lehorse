@@ -3,7 +3,7 @@ import { getPosts, getSettings } from '../../lib/queries'
 import { PostGrid } from '../../components/PostCard'
 import { Subscribe } from '../../components/Subscribe'
 import { Bandcamp } from '../../components/Bandcamp'
-import { SECTION_LABELS, formatDate, isoDate } from '../../lib/site'
+import { FORMAT_LABELS, formatDate, isoDate } from '../../lib/site'
 
 export const revalidate = 60
 
@@ -17,8 +17,6 @@ export default async function HomePage() {
   const featured = featuredResult.docs[0] || null
 
   const latest = await getPosts({ limit: 6, exclude: featured?.id })
-  const extreme = await getPosts({ section: 'extreme', limit: 3, exclude: featured?.id })
-  const fringe = await getPosts({ section: 'fringe', limit: 3, exclude: featured?.id })
 
   // The Pick block runs whichever recent article has a player attached, the
   // featured one included: it is the listening prompt, not a second teaser.
@@ -65,7 +63,7 @@ export default async function HomePage() {
                   height={1200}
                 />
                 <div>
-                  <p className="ph-eyebrow">{SECTION_LABELS[featured.section]}</p>
+                  <p className="ph-eyebrow">{FORMAT_LABELS[featured.format]}</p>
                   <h2 className="ph-h1" style={{ marginTop: 'var(--ph-space-3)' }}>
                     <Link href={`/posts/${featured.slug}`}>{featured.title}</Link>
                   </h2>
@@ -111,44 +109,6 @@ export default async function HomePage() {
           <PostGrid posts={latest.docs} />
         </div>
       </section>
-
-      {extreme.docs.length > 0 && (
-        <section className="ph-section">
-          <div className="ph-container">
-            <div className="ph-section-head">
-              <div>
-                <p className="ph-eyebrow">Metal and hardcore</p>
-                <h2 className="ph-h2" style={{ marginTop: 0 }}>
-                  Extreme
-                </h2>
-              </div>
-              <Link className="ph-btn ph-btn--quiet" href="/extreme">
-                More
-              </Link>
-            </div>
-            <PostGrid posts={extreme.docs} />
-          </div>
-        </section>
-      )}
-
-      {fringe.docs.length > 0 && (
-        <section className="ph-section">
-          <div className="ph-container">
-            <div className="ph-section-head">
-              <div>
-                <p className="ph-eyebrow">The strange lands in between</p>
-                <h2 className="ph-h2" style={{ marginTop: 0 }}>
-                  Fringe
-                </h2>
-              </div>
-              <Link className="ph-btn ph-btn--quiet" href="/fringe">
-                More
-              </Link>
-            </div>
-            <PostGrid posts={fringe.docs} />
-          </div>
-        </section>
-      )}
 
       {pick && (
         <section className="ph-section">

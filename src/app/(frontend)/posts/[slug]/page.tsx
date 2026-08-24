@@ -8,7 +8,6 @@ import { Bandcamp } from '../../../../components/Bandcamp'
 import { PostGrid } from '../../../../components/PostCard'
 import { Subscribe } from '../../../../components/Subscribe'
 import {
-  SECTION_LABELS,
   FORMAT_LABELS,
   formatDate,
   isoDate,
@@ -82,11 +81,16 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     ? post.genres.filter((g: any) => typeof g === 'object')
     : []
 
-  const related = await getPosts({
-    section: post.section,
-    limit: 3,
-    exclude: post.id,
-  })
+  // Related runs on format now that the sections are gone. A young site can hold
+  // only one piece in a format, so fall back to the latest rather than render an
+  // empty block.
+  const sameFormat = await getPosts({ format: post.format, limit: 3, exclude: post.id })
+  const related = sameFormat.docs.length
+    ? sameFormat
+    : await getPosts({ limit: 3, exclude: post.id })
+  const relatedLabel = sameFormat.docs.length
+    ? `More ${FORMAT_LABELS[post.format].toLowerCase()}s`
+    : 'Latest'
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -120,9 +124,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <article>
         <section className="ph-section ph-article-head">
           <div className="ph-container ph-container--prose">
-            <p className="ph-eyebrow">
-              {SECTION_LABELS[post.section]} · {FORMAT_LABELS[post.format]}
-            </p>
+            <p className="ph-eyebrow">{FORMAT_LABELS[post.format]}</p>
             <h1 className="ph-h1" style={{ marginTop: 'var(--ph-space-3)' }}>
               {post.title}
             </h1>
@@ -135,23 +137,17 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               {genres.length > 0 && <span>{genres.map((g: any) => g.name).join(', ')}</span>}
             </div>
 
-            <ul className="ph-tags" style={{ marginBottom: 'var(--ph-space-6)' }}>
-              <li>
-                <Link
-                  className={`ph-tag ph-tag--${post.section}`}
-                  href={`/${post.section}`}
-                >
-                  {SECTION_LABELS[post.section]}
-                </Link>
-              </li>
-              {genres.map((genre: any) => (
-                <li key={genre.id}>
-                  <Link className="ph-tag" href={`/genre/${genre.slug}`}>
-                    {genre.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {genres.length > 0 && (
+              <ul className="ph-tags" style={{ marginBottom: 'var(--ph-space-6)' }}>
+                {genres.map((genre: any) => (
+                  <li key={genre.id}>
+                    <Link className="ph-tag" href={`/genre/${genre.slug}`}>
+                      {genre.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {(post.coverArt || post.albumTitle) && (
               <div className="ph-record">
@@ -243,7 +239,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       {related.docs.length > 0 && (
         <section className="ph-section">
           <div className="ph-container">
-            <p className="ph-eyebrow">More {SECTION_LABELS[post.section]}</p>
+            <p className="ph-eyebrow">{relatedLabel}</p>
             <h2 className="ph-h2" style={{ marginTop: 0 }}>
               Keep going
             </h2>

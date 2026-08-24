@@ -51,7 +51,6 @@ export const getSettings = async (): Promise<any> => {
 }
 
 type PostQuery = {
-  section?: 'extreme' | 'fringe'
   format?: string
   genre?: number | string
   artist?: number | string
@@ -62,7 +61,6 @@ type PostQuery = {
 }
 
 export const getPosts = async ({
-  section,
   format,
   genre,
   artist,
@@ -74,7 +72,6 @@ export const getPosts = async ({
   const payload = await payloadClient()
 
   const and: any[] = [published]
-  if (section) and.push({ section: { equals: section } })
   if (format) and.push({ format: { equals: format } })
   if (genre) and.push({ genres: { in: [genre] } })
   if (artist) and.push({ artist: { equals: artist } })
@@ -120,11 +117,10 @@ export const getPageBySlug = async (slug: string): Promise<any> => {
   return result.docs[0] || null
 }
 
-export const getGenres = async (section?: 'extreme' | 'fringe'): Promise<Docs> => {
+export const getGenres = async (): Promise<Docs> => {
   const payload = await payloadClient()
   return payload.find({
     collection: 'genres',
-    where: section ? { section: { equals: section } } : {},
     limit: 100,
     sort: 'name',
     depth: 0,

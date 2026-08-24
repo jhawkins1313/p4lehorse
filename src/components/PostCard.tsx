@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SECTION_LABELS, FORMAT_LABELS, formatDateShort, isoDate } from '../lib/site'
+import { FORMAT_LABELS, formatDateShort, isoDate } from '../lib/site'
 
 const BLANK =
   "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23121216'/%3E%3C/svg%3E"
@@ -7,10 +7,7 @@ const BLANK =
 export const PostCard = ({ post }: { post: any }) => {
   const art = post.coverArt?.sizes?.card?.url || post.coverArt?.url || BLANK
   const artist = typeof post.artist === 'object' ? post.artist : null
-  const kicker =
-    post.format === 'review'
-      ? SECTION_LABELS[post.section]
-      : `${SECTION_LABELS[post.section]} · ${FORMAT_LABELS[post.format]}`
+  const kicker = FORMAT_LABELS[post.format]
 
   return (
     <article className="ph-card">

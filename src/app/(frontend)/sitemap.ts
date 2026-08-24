@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     payload.find({ collection: 'artists', limit: 1000, depth: 0 }),
   ])
 
-  const staticRoutes = ['', '/extreme', '/fringe', '/reviews', '/interviews'].map((path) => ({
+  const staticRoutes = ['', '/reviews', '/interviews'].map((path) => ({
     url: `${SERVER_URL}${path}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,

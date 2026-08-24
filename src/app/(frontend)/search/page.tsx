@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { searchPosts } from '../../../lib/queries'
-import { SECTION_LABELS, FORMAT_LABELS, formatDateShort } from '../../../lib/site'
+import { FORMAT_LABELS, formatDateShort } from '../../../lib/site'
 
 export const dynamic = 'force-dynamic'
 
@@ -59,7 +59,7 @@ export default async function SearchPage({
                 return (
                   <li key={post.id}>
                     <p className="ph-card__kicker">
-                      {SECTION_LABELS[post.section]} · {FORMAT_LABELS[post.format]} ·{' '}
+                      {FORMAT_LABELS[post.format]} ·{' '}
                       {formatDateShort(post.publishedAt)}
                     </p>
                     <h3>

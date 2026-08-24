@@ -5,7 +5,7 @@ export const Genres: CollectionConfig = {
   slug: 'genres',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'section', 'slug'],
+    defaultColumns: ['name', 'slug'],
     group: 'Content',
     description:
       'Genre tags. Sentence case, always: "Black metal", "Dungeon synth", "Post-punk".',
@@ -24,20 +24,6 @@ export const Genres: CollectionConfig = {
       admin: { description: 'Sentence case. Only the first word and proper nouns take a capital.' },
     },
     slugField('name'),
-    {
-      name: 'section',
-      type: 'select',
-      required: true,
-      defaultValue: 'extreme',
-      options: [
-        { label: 'Extreme', value: 'extreme' },
-        { label: 'Fringe', value: 'fringe' },
-      ],
-      admin: {
-        description:
-          'Extreme is everything metal and hardcore. Fringe is everything alternative, synth, post-punk, shoegaze, and the strange lands in between.',
-      },
-    },
     {
       name: 'description',
       type: 'textarea',

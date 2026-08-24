@@ -35,11 +35,6 @@ export const FORMAT_LABELS: Record<string, string> = {
   roundup: 'Roundup',
 }
 
-export const SECTION_LABELS: Record<string, string> = {
-  extreme: 'Extreme',
-  fringe: 'Fringe',
-}
-
 /** 19 August 2026. Long form for bylines. */
 export const formatDate = (value?: string | null): string => {
   if (!value) return ''

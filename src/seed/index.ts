@@ -1,5 +1,5 @@
 /**
- * Seeds a fresh database with the standing pages, the two section genre sets,
+ * Seeds a fresh database with the standing pages, the genre list,
  * and one worked example of every article format so the templates can be judged
  * with real copy in them.
  *
@@ -16,19 +16,19 @@ const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'seph@p4lehorse.com'
 const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'changeme-p4lehorse'
 
 const GENRES = [
-  { name: 'Black metal', section: 'extreme', description: 'Cold, fast, and usually recorded somewhere it should not have been.' },
-  { name: 'Atmospheric black metal', section: 'extreme' },
-  { name: 'Death metal', section: 'extreme' },
-  { name: 'Doom', section: 'extreme' },
-  { name: 'Sludge', section: 'extreme' },
-  { name: 'Hardcore', section: 'extreme' },
-  { name: 'Grindcore', section: 'extreme' },
-  { name: 'Dungeon synth', section: 'fringe', description: 'Keyboards, tape hiss, and a map of somewhere that does not exist.' },
-  { name: 'Shoegaze', section: 'fringe' },
-  { name: 'Post-punk', section: 'fringe' },
-  { name: 'Darkwave', section: 'fringe' },
-  { name: 'Ambient', section: 'fringe' },
-  { name: 'Neofolk', section: 'fringe' },
+  { name: 'Black metal', description: 'Cold, fast, and usually recorded somewhere it should not have been.' },
+  { name: 'Atmospheric black metal' },
+  { name: 'Death metal' },
+  { name: 'Doom' },
+  { name: 'Sludge' },
+  { name: 'Hardcore' },
+  { name: 'Grindcore' },
+  { name: 'Dungeon synth', description: 'Keyboards, tape hiss, and a map of somewhere that does not exist.' },
+  { name: 'Shoegaze' },
+  { name: 'Post-punk' },
+  { name: 'Darkwave' },
+  { name: 'Ambient' },
+  { name: 'Neofolk' },
 ]
 
 const run = async () => {
@@ -194,7 +194,6 @@ const run = async () => {
     title: 'A record that keeps a candle lit at the bottom of the well',
     slug: 'days-ov-yore-vlad-tepes-part-1',
     format: 'review',
-    section: 'extreme',
     featured: true,
     author: admin.id,
     artist: daysOvYore.id,
@@ -249,7 +248,6 @@ const run = async () => {
     title: 'Veiled Choir on recording in a chapel with no heating',
     slug: 'veiled-choir-interview',
     format: 'interview',
-    section: 'extreme',
     author: admin.id,
     artist: veiledChoir.id,
     publishedAt: new Date('2026-08-12T09:00:00Z').toISOString(),
@@ -280,7 +278,6 @@ const run = async () => {
     title: 'Six shoegaze records from small labels that deserved more than they got',
     slug: 'shoegaze-roundup-2026',
     format: 'roundup',
-    section: 'fringe',
     author: admin.id,
     publishedAt: new Date('2026-08-05T09:00:00Z').toISOString(),
     genres: [genreIds['Shoegaze'], genreIds['Darkwave']].filter(Boolean),

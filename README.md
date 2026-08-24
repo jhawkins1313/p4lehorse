@@ -49,9 +49,9 @@ that does not have your new column.
 
 | Collection | What it holds |
 |---|---|
-| **Articles** | Every piece. Five formats: review, interview, feature, retrospective, roundup. Each one is Extreme or Fringe. |
+| **Articles** | Every piece. Five formats: review, interview, feature, retrospective, roundup. |
 | **Artists** | Bands and solo acts. Each gets a page listing everything written about them. |
-| **Genres** | Tags, sentence case, each belonging to Extreme or Fringe. |
+| **Genres** | Tags, sentence case. |
 | **Media** | Uploads. Four derived sizes are generated on upload. |
 | **Pages** | About, Submit music, and anything else standing. |
 | **Subscribers** | Newsletter list. Write-only from outside. |
