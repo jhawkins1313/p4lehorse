@@ -13,7 +13,11 @@
 
 services:
   p4lehorse:
-    image: ghcr.io/bigguyowens/p4lehorse:latest
+    # Must match `github.repository` in .github/workflows/build.yml, which is the
+    # namespace the image is pushed under. When the repo changed owner the
+    # workflow followed it and this line did not, so Watchtower polled a tag
+    # nothing published to and the site sat on a stale image without erroring.
+    image: ghcr.io/jhawkins1313/p4lehorse:latest
     restart: unless-stopped
     env_file:
       - /srv/apps/p4lehorse/.env
