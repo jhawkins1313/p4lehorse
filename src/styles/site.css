@@ -230,6 +230,58 @@
   border: 1px solid var(--ph-line);
 }
 
+/* --- Header ----------------------------------------------------------------- */
+
+/* The nav links sit in 32px boxes, short of the 44px a fingertip needs (WCAG
+   2.5.5, Apple HIG). Only the height falls short: the shortest label, About, is
+   already 47px wide. Give the anchor a box of its own rather than padding it
+   out, so the target holds at 44px whatever the face's line metrics do and
+   whatever the fallback stack substitutes. Every width, not just the phone
+   layout: tablets and touch laptops get the one-row header too. The 72px
+   desktop header absorbs this without changing height. */
+.ph-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* The masthead sets the wordmark in nowrap and lays the four nav items in a row
+   that will not wrap, so the header needs about 560px to sit on one line. Under
+   that it runs past the viewport and drags the whole document out with it: every
+   page measures 522px wide on a 375px phone. Nothing on the site scrolls
+   sideways and the browser will not scroll to the overflow anyway, so About and
+   Search simply fall off the right edge. Drop the nav onto its own row instead.
+
+   Ordinary content never needs this: the header was the only thing on any page
+   wider than the screen. */
+
+@media (max-width: 40rem) {
+  .ph-header {
+    min-height: 0;
+  }
+
+  /* The 44px link boxes carry about 15px of their own space above and below the
+     label, so the row gap and the outer padding come down to match. Without
+     that the header reads bottom-heavy and costs 108px of a phone screen. */
+  .ph-header__inner {
+    flex-wrap: wrap;
+    gap: var(--ph-space-1);
+    padding-block: var(--ph-space-2);
+  }
+
+  /* A full row of its own, so the links have the whole width to spread across
+     rather than being sized to the wordmark's leftovers. */
+  .ph-header__inner > nav {
+    flex: 1 0 100%;
+  }
+
+  .ph-nav {
+    justify-content: space-between;
+    gap: var(--ph-space-2);
+    flex-wrap: wrap;
+  }
+}
+
 /* --- Misc ------------------------------------------------------------------- */
 
 .ph-stack > * + * {
