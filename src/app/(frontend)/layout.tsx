@@ -7,6 +7,7 @@ import '../../styles/site.css'
 
 import { Header } from '../../components/Header'
 import { Footer } from '../../components/Footer'
+import { GoogleTag } from '../../components/GoogleTag'
 import { SERVER_URL } from '../../lib/site'
 
 export const metadata: Metadata = {
@@ -55,6 +56,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <GoogleTag />
       </body>
     </html>
   )
