@@ -21,9 +21,7 @@ export default async function InterviewsPage({
 
   return (
     <Listing
-      eyebrow="Format"
       title="Interviews"
-      lede="Conversations with the people making the records. Long, unhurried, and printed close to how they were said."
       posts={result.docs}
       page={page}
       totalPages={result.totalPages}

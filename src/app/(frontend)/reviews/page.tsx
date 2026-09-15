@@ -21,9 +21,7 @@ export default async function ReviewsPage({
 
   return (
     <Listing
-      eyebrow="Format"
       title="Reviews"
-      lede="No numerical scores, no star ratings, no takedowns. Judgment lives in the prose."
       posts={result.docs}
       page={page}
       totalPages={result.totalPages}

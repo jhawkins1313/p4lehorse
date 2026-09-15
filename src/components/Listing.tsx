@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { PostGrid } from './PostCard'
 
 type Props = {
-  eyebrow: string
+  eyebrow?: string
   title: string
   lede?: string
   posts: any[]
@@ -29,8 +29,8 @@ export const Listing = ({
 
     <section className="ph-section">
       <div className="ph-container">
-        <p className="ph-eyebrow">{eyebrow}</p>
-        <h1 className="ph-h1" style={{ marginTop: 'var(--ph-space-3)' }}>
+        {eyebrow && <p className="ph-eyebrow">{eyebrow}</p>}
+        <h1 className="ph-h1" style={eyebrow ? { marginTop: 'var(--ph-space-3)' } : undefined}>
           {title}
         </h1>
         {lede && (
