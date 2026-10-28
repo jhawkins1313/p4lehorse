@@ -776,6 +776,20 @@ export interface SiteSetting {
    */
   homeHeading?: string | null;
   homeLede?: string | null;
+  playlistHeading?: string | null;
+  playlistBlurb?: string | null;
+  /**
+   * Where both buttons and every cover send people. Paste the share link without the si= tracking parameter.
+   */
+  playlistUrl?: string | null;
+  /**
+   * The value after "list=" in that URL. This is what the carousel reads to find the most recent additions.
+   */
+  playlistId?: string | null;
+  /**
+   * The playlist artwork. YouTube signs its own copy of this image so it cannot be linked to directly: save it off the playlist page and upload it here. Without one, the newest cover in the run stands in.
+   */
+  playlistCover?: (number | null) | Media;
   subscribeHeading?: string | null;
   subscribeSub?: string | null;
   social?:
@@ -803,6 +817,11 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   metaDescription?: T;
   homeHeading?: T;
   homeLede?: T;
+  playlistHeading?: T;
+  playlistBlurb?: T;
+  playlistUrl?: T;
+  playlistId?: T;
+  playlistCover?: T;
   subscribeHeading?: T;
   subscribeSub?: T;
   social?:

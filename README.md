@@ -182,6 +182,7 @@ directory. Copy that directory and you have copied the site.
 | `PORT` | Internal listen port. Default 3000. |
 | `RESEND_API_KEY` | Optional. Without it, mail is logged to the console. |
 | `EMAIL_FROM` | Optional. From address for outbound mail. |
+| `YOUTUBE_API_KEY` | Optional. Fills the P4LEHORSE PICKS carousel. Without it the block falls back to the snapshot in `src/lib/youtube.ts`. |
 
 ### The one that has to be right at build time
 
@@ -203,6 +204,48 @@ curl -s https://<host>/robots.txt | grep Sitemap
 
 ---
 
+## The PICKS playlist
+
+The block at the foot of the homepage. It shows the playlist cover, two links out, and a
+carousel of the fifteen most recent additions drifting past. It replaced the single Bandcamp
+Pick that used to sit there: one album is a recommendation, a playlist is a rotation and it
+is something a reader can subscribe to. The Bandcamp player itself is untouched and still
+runs inside articles.
+
+Everything editorial lives under **Settings, Site settings, Playlist**: the heading, the
+blurb, the link, the playlist id and the cover. The carousel fills itself.
+
+### Setting it up
+
+Two steps, neither of which blocks a deploy. The block renders without them.
+
+**1. The API key.** Make one in the Google Cloud Console, enable "YouTube Data API v3", and
+restrict the key to that one API. Put it in the server's `.env` as `YOUTUBE_API_KEY`. The
+playlist is public, so there is no OAuth and nothing to authorise. Unlike
+`NEXT_PUBLIC_SERVER_URL` this is runtime only: the carousel refetches on the page's own
+revalidate, so it does not go in the Dockerfile or the workflow.
+
+Without a key, and any time the call fails, the carousel falls back to a snapshot of the
+playlist hardcoded in `src/lib/youtube.ts`. That is deliberate, because the image build
+prerenders the homepage in a container that has no key and a stale carousel beats an empty
+one. The cost is that the snapshot only changes when somebody edits that file.
+
+**2. The cover.** YouTube signs its own copy of the playlist artwork, so it cannot be linked
+to directly and has to be uploaded. Save it off the playlist page and upload it under
+Settings, Site settings, Playlist. Until one is there, the newest cover in the run stands in.
+
+### Changing the playlist
+
+Paste the new share link into **Playlist URL** and put the part after `list=` into
+**Playlist ID**. Drop the `si=` tracking parameter. Nothing else needs touching, though the
+snapshot in `src/lib/youtube.ts` will still describe the old playlist until it is replaced.
+
+Covers come from YouTube's thumbnails and are cropped to the sleeve by `.ph-picks__frame--yt`
+in `site.css`. The comment there explains the scale factor, which is not a magic number and
+should not be adjusted by eye.
+
+---
+
 ## If you outgrow SQLite
 
 SQLite was chosen because the box is a 16 GB laptop already running about ten containers, and
@@ -217,4 +260,5 @@ on this server if you would rather not run another container.
 ## Next steps
 
 Upload cover art for the seeded articles and the card grids fill in. Add the real social
-links under Settings, Site settings, Elsewhere. Then write something.
+links under Settings, Site settings, Elsewhere. Set up the PICKS playlist, which is a key in
+the server's `.env` and one image upload. Then write something.

@@ -2,8 +2,9 @@ import Link from 'next/link'
 import { getPosts, getSettings } from '../../lib/queries'
 import { PostGrid } from '../../components/PostCard'
 import { Subscribe } from '../../components/Subscribe'
-import { Bandcamp } from '../../components/Bandcamp'
+import { PlaylistPicks } from '../../components/PlaylistPicks'
 import { FORMAT_LABELS, formatDate, isoDate } from '../../lib/site'
+import { getPlaylistTracks, PICKS_PLAYLIST_ID, PICKS_PLAYLIST_URL } from '../../lib/youtube'
 
 export const revalidate = 60
 
@@ -16,13 +17,21 @@ export default async function HomePage() {
   const featuredResult = await getPosts({ featured: true, limit: 1 })
   const featured = featuredResult.docs[0] || null
 
-  const latest = await getPosts({ limit: 6, exclude: featured?.id })
+  // Everything new is the plain latest six with nothing held back, so the
+  // featured article runs here too: the feature block is a spotlight, not a
+  // removal. A featured piece older than the six takes the last slot rather
+  // than going missing from the run.
+  const latest = await getPosts({ limit: 6 })
+  const latestDocs =
+    !featured || latest.docs.some((p: any) => p.id === featured.id)
+      ? latest.docs
+      : [...latest.docs.slice(0, 5), featured]
 
-  // The Pick block runs whichever recent article has a player attached, the
-  // featured one included: it is the listening prompt, not a second teaser.
-  const pickPool = await getPosts({ limit: 12 })
-  const pick = pickPool.docs.find((p: any) => p.bandcamp?.albumId) || null
-  const pickArtist = pick && typeof pick.artist === 'object' ? pick.artist : null
+  // The listening prompt at the foot of the page. The constants are a floor
+  // under the settings rather than a repeat of the field defaults: an editor
+  // can empty a text field, and the block has to survive that with its link
+  // still pointing somewhere real.
+  const picks = await getPlaylistTracks(settings?.playlistId || PICKS_PLAYLIST_ID)
 
   return (
     <>
@@ -106,27 +115,17 @@ export default async function HomePage() {
               More
             </Link>
           </div>
-          <PostGrid posts={latest.docs} />
+          <PostGrid posts={latestDocs} />
         </div>
       </section>
 
-      {pick && (
-        <section className="ph-section">
-          <div className="ph-container">
-            <Bandcamp
-              albumId={pick.bandcamp.albumId}
-              trackId={pick.bandcamp.trackId}
-              url={pick.bandcamp.url}
-              quote={pick.bandcamp.quote || pick.excerpt}
-              label={
-                pickArtist?.name && pick.albumTitle
-                  ? `${pickArtist.name} · ${pick.albumTitle}`
-                  : pick.title
-              }
-            />
-          </div>
-        </section>
-      )}
+      <PlaylistPicks
+        tracks={picks}
+        url={settings?.playlistUrl || PICKS_PLAYLIST_URL}
+        heading={settings?.playlistHeading}
+        blurb={settings?.playlistBlurb}
+        cover={settings?.playlistCover}
+      />
 
       <Subscribe
         heading={settings?.subscribeHeading}

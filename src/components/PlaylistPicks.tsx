@@ -1,0 +1,128 @@
+import type { CSSProperties } from 'react'
+import type { PlaylistTrack } from '../lib/youtube'
+
+type Props = {
+  tracks: PlaylistTrack[]
+  url: string
+  heading?: string | null
+  blurb?: string | null
+  cover?: any
+}
+
+/** Seconds of travel per cover. Constant speed whatever the run length is. */
+const SECONDS_PER_COVER = 5
+
+/**
+ * P4LEHORSE PICKS. The standing listening rotation, at the foot of the homepage
+ * where the single Bandcamp Pick used to sit. One record was a recommendation;
+ * this is the whole room, and the job of the block is to get people onto the
+ * playlist and keep them there.
+ *
+ * No JavaScript and no YouTube iframe. The drift is a CSS animation on a strip
+ * that holds the run twice over, and everything clickable points at the
+ * playlist.
+ */
+export const PlaylistPicks = ({ tracks, url, heading, blurb, cover }: Props) => {
+  if (!tracks.length || !url) return null
+
+  const title = heading || 'P4LEHORSE PICKS'
+  const uploaded = cover?.sizes?.square?.url || cover?.url || null
+  const coverSrc = uploaded || tracks[0].art
+  const coverAlt = cover?.alt || `Playlist artwork for ${title}`
+
+  // Twice through. The animation travels exactly the width of one run, so the
+  // frame it loops back to is identical to the one it left and nothing snaps.
+  const strip = [...tracks, ...tracks]
+
+  return (
+    <section className="ph-picks">
+      <hr className="ph-rule" />
+
+      <div className="ph-container">
+        <div className="ph-picks__head">
+          {/* An uploaded cover is already square and is left alone. A borrowed
+              YouTube thumbnail is not, so it gets the same zoom as the run. */}
+          <span className={`ph-picks__frame${uploaded ? '' : ' ph-picks__frame--yt'}`}>
+            <img src={coverSrc} alt={coverAlt} width={1200} height={1200} />
+          </span>
+          <div>
+            <p className="ph-eyebrow">In rotation</p>
+            <h2 className="ph-h2 ph-picks__title">{title}</h2>
+            <p className="ph-lede">
+              {blurb ||
+                'What is actually on while the next reviews get written. Metal, hardcore, synth and the stranger edges, updated as records land.'}
+            </p>
+            <p className="ph-picks__actions">
+              <a
+                className="ph-btn ph-btn--primary"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Listen on YouTube Music
+              </a>{' '}
+              <a
+                className="ph-btn ph-btn--ghost"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Save the playlist
+              </a>
+            </p>
+            <p className="ph-picks__meta">
+              The {tracks.length} most recent additions. Save it and the next one finds you.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Outside the container on purpose: the covers travel off both edges, so
+          the run reads as continuing rather than as a row that ran out. */}
+      <a
+        className="ph-picks__rail"
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Listen to ${title} on YouTube Music`}
+      >
+        <div
+          className="ph-picks__strip"
+          style={
+            { '--ph-picks-duration': `${tracks.length * SECONDS_PER_COVER}s` } as CSSProperties
+          }
+        >
+          {strip.map((item, i) => {
+            // The second pass is the same records again. Hiding it from the
+            // accessibility tree is what stops a screen reader reading the
+            // rotation out twice.
+            const repeat = i >= tracks.length
+            return (
+              <figure
+                className="ph-picks__item"
+                key={`${item.videoId}-${i}`}
+                aria-hidden={repeat || undefined}
+              >
+                <span className="ph-picks__frame ph-picks__frame--yt">
+                  <img
+                    src={item.art}
+                    alt={repeat ? '' : `Cover of ${item.title} by ${item.artist}`}
+                    loading="lazy"
+                    width={480}
+                    height={360}
+                  />
+                </span>
+                <figcaption>
+                  <strong>{item.title}</strong>
+                  <span>{item.artist}</span>
+                </figcaption>
+              </figure>
+            )
+          })}
+        </div>
+      </a>
+
+      <hr className="ph-rule" />
+    </section>
+  )
+}

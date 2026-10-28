@@ -294,3 +294,184 @@
   place-content: center;
   text-align: center;
 }
+
+/* --- P4LEHORSE PICKS -------------------------------------------------------- */
+/* The playlist block at the foot of the homepage, where the single Bandcamp
+   Pick used to sit. The Bandcamp player is untouched and still runs inside
+   articles. Nothing new is introduced here: one chromatic color, the neutral
+   frame the rest of the cover art uses, and the kit's own radii. */
+
+.ph-picks {
+  padding-block: var(--ph-space-8);
+}
+
+.ph-picks__head {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: var(--ph-space-7);
+  align-items: center;
+}
+
+@media (max-width: 52rem) {
+  .ph-picks__head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ph-space-5);
+  }
+
+  /* Stacked, the cover would otherwise run the full width of the phone and
+     push the pitch and both buttons under the fold on its own. */
+  .ph-picks__head > .ph-picks__frame {
+    max-width: 260px;
+  }
+}
+
+/* Framed in the neutral like every other cover on the site. Cover art is
+   unpredictable and a magenta frame fights half of it. */
+.ph-picks__frame {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--ph-line-strong);
+  background: var(--ph-surface-2);
+  border-radius: var(--ph-radius-md);
+  transition: border-color var(--ph-duration-2) var(--ph-ease);
+}
+
+.ph-picks__head > .ph-picks__frame {
+  width: 100%;
+  border-radius: var(--ph-radius-lg);
+}
+
+.ph-picks__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity var(--ph-duration-2) var(--ph-ease);
+}
+
+/* YouTube hands out hqdefault at 480x360 with the real 16:9 frame letterboxed
+   inside it, and a topic upload puts the square sleeve inside that again. Two
+   nested boxes means the sleeve is 270 of the 360, so a plain square crop keeps
+   45px of black on every side. Scaling by 4/3 against a clipping parent takes
+   the bars off and lands on the sleeve exactly. The same factor works for the
+   ordinary uploads in the playlist, where it crops the letterboxing instead.
+   Only borrowed thumbnails get this. An uploaded cover is already square. */
+.ph-picks__frame--yt img {
+  transform: scale(1.3334);
+}
+
+.ph-picks__title {
+  margin: var(--ph-space-3) 0 var(--ph-space-4);
+}
+
+.ph-picks__actions {
+  margin-top: var(--ph-space-5);
+}
+
+.ph-picks__meta {
+  margin: var(--ph-space-4) 0 0;
+  color: var(--ph-dim);
+  font-size: var(--ph-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--ph-tracking-wide);
+}
+
+/* The rail breaks the container deliberately. Covers leave and enter the page
+   itself, which is what makes it read as a rotation still running rather than
+   a row that happens to be this long. The mask does the fade at both ends
+   without painting an edge color over the void. */
+.ph-picks__rail {
+  display: block;
+  margin-block: var(--ph-space-7);
+  overflow: hidden;
+  text-decoration: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.ph-picks__strip {
+  display: flex;
+  width: max-content;
+  animation: ph-picks-drift var(--ph-picks-duration, 75s) linear infinite;
+  will-change: transform;
+}
+
+/* The strip holds the run twice, so travelling half its width lands on a frame
+   identical to the one it started from. That only holds if the two halves are
+   the same width, which is why the spacing is a trailing margin on every item
+   rather than a flex gap: a gap sits between items and not after the last one,
+   so half the strip would come out half a gap short and the loop would jump. */
+@keyframes ph-picks-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.ph-picks__rail:hover .ph-picks__strip,
+.ph-picks__rail:focus-visible .ph-picks__strip {
+  animation-play-state: paused;
+}
+
+.ph-picks__item {
+  flex: none;
+  width: clamp(8.5rem, 15vw, 11rem);
+  margin: 0 var(--ph-space-4) 0 0;
+}
+
+/* Stopping on the strip dims the run and lights whichever cover is under the
+   cursor, so the pause has somewhere to land. */
+.ph-picks__rail:hover .ph-picks__frame img {
+  opacity: 0.45;
+}
+
+.ph-picks__item:hover .ph-picks__frame img {
+  opacity: 1;
+}
+
+.ph-picks__item:hover .ph-picks__frame {
+  border-color: var(--ph-accent);
+}
+
+.ph-picks__item figcaption {
+  display: grid;
+  gap: var(--ph-space-1);
+  margin-top: var(--ph-space-3);
+  font-size: var(--ph-text-xs);
+  line-height: var(--ph-leading-normal);
+}
+
+.ph-picks__item figcaption strong,
+.ph-picks__item figcaption span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ph-picks__item figcaption strong {
+  color: var(--ph-text);
+  font-weight: var(--ph-weight-bold);
+}
+
+.ph-picks__item figcaption span {
+  color: var(--ph-muted);
+}
+
+/* The global reduce rule in the tokens file only shortens an animation, which
+   here would park the strip halfway through its loop. This stops it at the
+   start instead and hands the run over to the scrollbar. */
+@media (prefers-reduced-motion: reduce) {
+  .ph-picks__strip {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .ph-picks__rail {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
