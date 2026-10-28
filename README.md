@@ -182,6 +182,7 @@ directory. Copy that directory and you have copied the site.
 | `PORT` | Internal listen port. Default 3000. |
 | `RESEND_API_KEY` | Optional. Without it, mail is logged to the console. |
 | `EMAIL_FROM` | Optional. From address for outbound mail. |
+| `YOUTUBE_API_KEY` | Optional. Fills the P4LEHORSE PICKS carousel. Without it the block falls back to the snapshot in `src/lib/youtube.ts`. |
 
 ### The one that has to be right at build time
 
