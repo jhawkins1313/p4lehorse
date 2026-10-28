@@ -16,7 +16,15 @@ export default async function HomePage() {
   const featuredResult = await getPosts({ featured: true, limit: 1 })
   const featured = featuredResult.docs[0] || null
 
-  const latest = await getPosts({ limit: 6, exclude: featured?.id })
+  // Everything new is the plain latest six with nothing held back, so the
+  // featured article runs here too: the feature block is a spotlight, not a
+  // removal. A featured piece older than the six takes the last slot rather
+  // than going missing from the run.
+  const latest = await getPosts({ limit: 6 })
+  const latestDocs =
+    !featured || latest.docs.some((p: any) => p.id === featured.id)
+      ? latest.docs
+      : [...latest.docs.slice(0, 5), featured]
 
   // The Pick block runs whichever recent article has a player attached, the
   // featured one included: it is the listening prompt, not a second teaser.
@@ -106,7 +114,7 @@ export default async function HomePage() {
               More
             </Link>
           </div>
-          <PostGrid posts={latest.docs} />
+          <PostGrid posts={latestDocs} />
         </div>
       </section>
 
