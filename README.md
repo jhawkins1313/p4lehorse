@@ -212,14 +212,28 @@ Pick that used to sit there: one album is a recommendation, a playlist is a rota
 is something a reader can subscribe to. The Bandcamp player itself is untouched and still
 runs inside articles.
 
-Everything editorial lives under **Settings, Site settings, Playlist**: the heading, the
-blurb, the link, the playlist id and the cover. The carousel fills itself.
+**Settings, Site settings, Playlist** holds the heading, the link and the playlist id. That
+is all of it. The carousel fills itself and the artwork is committed, so there is nothing to
+upload and nothing to keep in step.
 
-### Setting it up
+### The artwork is in the repo, not the Media library
 
-Two steps, neither of which blocks a deploy. The block renders without them.
+`public/images/p4lehorse-picks-cover-480.jpg`, referenced by a constant in
+`PlaylistPicks.tsx`. It began as an upload field falling back to the newest sleeve in the
+run, which meant a fresh deploy showed somebody's album cover until a human remembered to
+upload the real artwork into the *production* Media library, a different database from any
+local one. The cover is fixed branding rather than editorial, so it belongs with the code
+that renders it. Replacing it is a file swap and a deploy.
 
-**1. The API key.** Make one in the Google Cloud Console, enable "YouTube Data API v3", and
+It is 480x480, which is the largest YouTube will part with, and it drives a 300px slot. On a
+high density display it is slightly soft. If the original artwork turns up, drop it in beside
+this one and point the constant at it.
+
+### Setting up the API key
+
+One step, which does not block a deploy. The block renders without it.
+
+Make a key in the Google Cloud Console, enable "YouTube Data API v3", and
 restrict the key to that one API. Put it in the server's `.env` as `YOUTUBE_API_KEY`. The
 playlist is public, so there is no OAuth and nothing to authorise. Unlike
 `NEXT_PUBLIC_SERVER_URL` this is runtime only: the carousel refetches on the page's own
@@ -229,10 +243,6 @@ Without a key, and any time the call fails, the carousel falls back to a snapsho
 playlist hardcoded in `src/lib/youtube.ts`. That is deliberate, because the image build
 prerenders the homepage in a container that has no key and a stale carousel beats an empty
 one. The cost is that the snapshot only changes when somebody edits that file.
-
-**2. The cover.** YouTube signs its own copy of the playlist artwork, so it cannot be linked
-to directly and has to be uploaded. Save it off the playlist page and upload it under
-Settings, Site settings, Playlist. Until one is there, the newest cover in the run stands in.
 
 ### Changing the playlist
 
@@ -260,5 +270,5 @@ on this server if you would rather not run another container.
 ## Next steps
 
 Upload cover art for the seeded articles and the card grids fill in. Add the real social
-links under Settings, Site settings, Elsewhere. Set up the PICKS playlist, which is a key in
-the server's `.env` and one image upload. Then write something.
+links under Settings, Site settings, Elsewhere. Put `YOUTUBE_API_KEY` in the server's `.env`
+so the PICKS carousel reads the live playlist. Then write something.

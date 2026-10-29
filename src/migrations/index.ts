@@ -11,6 +11,7 @@
 import * as migration_20260821_183527_initial from './20260821_183527_initial'
 import * as migration_20260824_142002_drop_sections from './20260824_142002_drop_sections'
 import * as migration_20261028_153701_picks_playlist from './20261028_153701_picks_playlist'
+import * as migration_20261029_002118_drop_playlist_blurb_and_cover from './20261029_002118_drop_playlist_blurb_and_cover'
 
 export const migrations = [
   {
@@ -27,5 +28,10 @@ export const migrations = [
     up: migration_20261028_153701_picks_playlist.up,
     down: migration_20261028_153701_picks_playlist.down,
     name: '20261028_153701_picks_playlist',
+  },
+  {
+    up: migration_20261029_002118_drop_playlist_blurb_and_cover.up,
+    down: migration_20261029_002118_drop_playlist_blurb_and_cover.down,
+    name: '20261029_002118_drop_playlist_blurb_and_cover',
   },
 ]

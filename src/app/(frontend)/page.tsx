@@ -123,8 +123,6 @@ export default async function HomePage() {
         tracks={picks}
         url={settings?.playlistUrl || PICKS_PLAYLIST_URL}
         heading={settings?.playlistHeading}
-        blurb={settings?.playlistBlurb}
-        cover={settings?.playlistCover}
       />
 
       <Subscribe
