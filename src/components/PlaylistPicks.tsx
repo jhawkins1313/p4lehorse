@@ -45,80 +45,76 @@ export const PlaylistPicks = ({ tracks, url, heading }: Props) => {
       <hr className="ph-rule" />
 
       <div className="ph-container">
-        <div className="ph-picks__head">
-          {/* Already square, so none of the crop the borrowed thumbnails need. */}
-          <span className="ph-picks__frame">
-            <img src={COVER_SRC} alt={`Playlist artwork for ${title}`} width={480} height={480} />
-          </span>
-          <div>
-            <p className="ph-eyebrow">In rotation</p>
-            <h2 className="ph-h2 ph-picks__title">{title}</h2>
-            <p className="ph-picks__actions">
-              <a
-                className="ph-btn ph-btn--primary"
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Listen on YouTube Music
-              </a>{' '}
-              <a
-                className="ph-btn ph-btn--ghost"
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Save the playlist
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
+        <p className="ph-eyebrow">In rotation</p>
+        <h2 className="ph-h2 ph-picks__title">{title}</h2>
+        <p className="ph-picks__actions">
+          <a className="ph-btn ph-btn--primary" href={url} target="_blank" rel="noopener noreferrer">
+            Listen on YouTube Music
+          </a>{' '}
+          <a className="ph-btn ph-btn--ghost" href={url} target="_blank" rel="noopener noreferrer">
+            Save the playlist
+          </a>
+        </p>
 
-      {/* Outside the container on purpose: the covers travel off both edges, so
-          the run reads as continuing rather than as a row that ran out. */}
-      <a
-        className="ph-picks__rail"
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Listen to ${title} on YouTube Music`}
-      >
-        <div
-          className="ph-picks__strip"
-          style={
-            { '--ph-picks-duration': `${tracks.length * SECONDS_PER_COVER}s` } as CSSProperties
-          }
+        {/* The artwork sits on the carousel's axis rather than above it, and the
+            run drifts leftward into it: the rail underlaps the cover and the
+            cover paints on top, so each record disappears behind the sleeve
+            instead of stopping at a margin. The rotation feeds the playlist. */}
+        <a
+          className="ph-picks__rotation"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Listen to ${title} on YouTube Music`}
         >
-          {strip.map((item, i) => {
-            // The second pass is the same records again. Hiding it from the
-            // accessibility tree is what stops a screen reader reading the
-            // rotation out twice.
-            const repeat = i >= tracks.length
-            return (
-              <figure
-                className="ph-picks__item"
-                key={`${item.videoId}-${i}`}
-                aria-hidden={repeat || undefined}
-              >
-                <span className="ph-picks__frame ph-picks__frame--yt">
-                  <img
-                    src={item.art}
-                    alt={repeat ? '' : `Cover of ${item.title} by ${item.artist}`}
-                    loading="lazy"
-                    width={480}
-                    height={360}
-                  />
-                </span>
-                <figcaption>
-                  <strong>{item.title}</strong>
-                  <span>{item.artist}</span>
-                </figcaption>
-              </figure>
-            )
-          })}
-        </div>
-      </a>
+          {/* The wrapper is what the run actually disappears into. It is opaque
+              and spans the full height of the row, so a record taller than the
+              sleeve cannot peek out above or below it at any width. */}
+          <span className="ph-picks__hero">
+            {/* Already square, so none of the crop the borrowed thumbnails need. */}
+            <span className="ph-picks__frame ph-picks__frame--hero">
+              <img src={COVER_SRC} alt={`Playlist artwork for ${title}`} width={480} height={480} />
+            </span>
+          </span>
+
+          <div className="ph-picks__rail">
+            <div
+              className="ph-picks__strip"
+              style={
+                { '--ph-picks-duration': `${tracks.length * SECONDS_PER_COVER}s` } as CSSProperties
+              }
+            >
+              {strip.map((item, i) => {
+                // The second pass is the same records again. Hiding it from the
+                // accessibility tree is what stops a screen reader reading the
+                // rotation out twice.
+                const repeat = i >= tracks.length
+                return (
+                  <figure
+                    className="ph-picks__item"
+                    key={`${item.videoId}-${i}`}
+                    aria-hidden={repeat || undefined}
+                  >
+                    <span className="ph-picks__frame ph-picks__frame--yt">
+                      <img
+                        src={item.art}
+                        alt={repeat ? '' : `Cover of ${item.title} by ${item.artist}`}
+                        loading="lazy"
+                        width={480}
+                        height={360}
+                      />
+                    </span>
+                    <figcaption>
+                      <strong>{item.title}</strong>
+                      <span>{item.artist}</span>
+                    </figcaption>
+                  </figure>
+                )
+              })}
+            </div>
+          </div>
+        </a>
+      </div>
 
       <hr className="ph-rule" />
     </section>

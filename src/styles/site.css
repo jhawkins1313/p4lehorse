@@ -303,26 +303,18 @@
 
 .ph-picks {
   padding-block: var(--ph-space-8);
+  /* The rotation row reaches past the container to the right using viewport
+     units, which overshoot by half a scrollbar. Clipping here is what stops
+     that becoming a horizontal scrollbar on the whole page. */
+  overflow-x: clip;
 }
 
-.ph-picks__head {
-  display: grid;
-  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-  gap: var(--ph-space-7);
-  align-items: center;
+.ph-picks__title {
+  margin: var(--ph-space-3) 0 var(--ph-space-4);
 }
 
-@media (max-width: 52rem) {
-  .ph-picks__head {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--ph-space-5);
-  }
-
-  /* Stacked, the cover would otherwise run the full width of the phone and
-     push the pitch and both buttons under the fold on its own. */
-  .ph-picks__head > .ph-picks__frame {
-    max-width: 260px;
-  }
+.ph-picks__actions {
+  margin-top: var(--ph-space-5);
 }
 
 /* Framed in the neutral like every other cover on the site. Cover art is
@@ -335,11 +327,6 @@
   background: var(--ph-surface-2);
   border-radius: var(--ph-radius-md);
   transition: border-color var(--ph-duration-2) var(--ph-ease);
-}
-
-.ph-picks__head > .ph-picks__frame {
-  width: 100%;
-  border-radius: var(--ph-radius-lg);
 }
 
 .ph-picks__frame img {
@@ -356,30 +343,62 @@
    45px of black on every side. Scaling by 4/3 against a clipping parent takes
    the bars off and lands on the sleeve exactly. The same factor works for the
    ordinary uploads in the playlist, where it crops the letterboxing instead.
-   Only borrowed thumbnails get this. An uploaded cover is already square. */
+   Only borrowed thumbnails get this. The playlist artwork is already square. */
 .ph-picks__frame--yt img {
   transform: scale(1.3334);
 }
 
-.ph-picks__title {
-  margin: var(--ph-space-3) 0 var(--ph-space-4);
-}
+/* --- The rotation ----------------------------------------------------------- */
+/* Artwork on the left, on the carousel's own axis, and the run drifting
+   leftward into it. The rail starts underneath the sleeve rather than beside
+   it, so a record travels behind the artwork and is gone. The playlist is
+   where the rotation ends up, and the block says so without a caption. */
 
-.ph-picks__actions {
-  margin-top: var(--ph-space-5);
-}
-
-/* The rail breaks the container deliberately. Covers leave and enter the page
-   itself, which is what makes it read as a rotation still running rather than
-   a row that happens to be this long. The mask does the fade at both ends
-   without painting an edge color over the void. */
-.ph-picks__rail {
-  display: block;
-  margin-block: var(--ph-space-7);
-  overflow: hidden;
+.ph-picks__rotation {
+  /* The floor is set by legibility, not by layout: the artwork carries its own
+     wordmark, and under about 9rem that type stops being readable and the
+     sleeve stops doing its job. The phone gives up carousel width for it. */
+  --ph-picks-cover: clamp(9rem, 22vw, 17rem);
+  display: grid;
+  grid-template-columns: var(--ph-picks-cover) minmax(0, 1fr);
+  align-items: stretch;
+  margin-top: var(--ph-space-7);
+  margin-bottom: var(--ph-space-7);
   text-decoration: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  /* Full bleed on the right only. The run arrives from off the page and ends
+     at the sleeve, which stays on the container's left edge under the heading.
+     50% is half this row's width, 50vw half the viewport, and the difference
+     is exactly the gutter plus whatever the centred container leaves over. */
+  margin-right: calc(50% - 50vw);
+}
+
+.ph-picks__hero {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  /* Opaque and full height. This, not the square below it, is what the run
+     disappears into, so nothing can peek out above or below the sleeve. */
+  background: var(--ph-void);
+}
+
+.ph-picks__frame--hero {
+  width: 100%;
+  border-radius: var(--ph-radius-lg);
+  box-shadow: var(--ph-shadow-md);
+}
+
+/* Pulled back under the sleeve by exactly the sleeve's width. Without it the
+   rail would clip at an edge sitting next to the artwork and the records would
+   stop dead rather than pass behind it. */
+.ph-picks__rail {
+  grid-column: 2;
+  margin-left: calc(var(--ph-picks-cover) * -1);
+  overflow: hidden;
+  /* Fade on the right only. Records arrive out of the page and leave into the
+     artwork, which needs no fade of its own. */
+  -webkit-mask-image: linear-gradient(90deg, #000, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, #000, #000 88%, transparent);
 }
 
 .ph-picks__strip {
@@ -403,8 +422,8 @@
   }
 }
 
-.ph-picks__rail:hover .ph-picks__strip,
-.ph-picks__rail:focus-visible .ph-picks__strip {
+.ph-picks__rotation:hover .ph-picks__strip,
+.ph-picks__rotation:focus-visible .ph-picks__strip {
   animation-play-state: paused;
 }
 
@@ -414,9 +433,9 @@
   margin: 0 var(--ph-space-4) 0 0;
 }
 
-/* Stopping on the strip dims the run and lights whichever cover is under the
-   cursor, so the pause has somewhere to land. */
-.ph-picks__rail:hover .ph-picks__frame img {
+/* Stopping on the run dims it and lights whichever record is under the cursor,
+   so the pause has somewhere to land. The artwork is left alone. */
+.ph-picks__rotation:hover .ph-picks__item .ph-picks__frame img {
   opacity: 0.45;
 }
 
@@ -454,7 +473,9 @@
 
 /* The global reduce rule in the tokens file only shortens an animation, which
    here would park the strip halfway through its loop. This stops it at the
-   start instead and hands the run over to the scrollbar. */
+   start instead and hands the run over to the scrollbar. The rail comes out
+   from under the sleeve to do it: scrolling by hand into something opaque
+   would just hide the records the reader is trying to reach. */
 @media (prefers-reduced-motion: reduce) {
   .ph-picks__strip {
     animation: none !important;
@@ -462,6 +483,7 @@
   }
 
   .ph-picks__rail {
+    margin-left: 0;
     overflow-x: auto;
     -webkit-mask-image: none;
     mask-image: none;
