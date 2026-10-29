@@ -71,9 +71,6 @@ export const PlaylistPicks = ({ tracks, url, heading }: Props) => {
                 Save the playlist
               </a>
             </p>
-            <p className="ph-picks__meta">
-              The {tracks.length} most recent additions. Save it and the next one finds you.
-            </p>
           </div>
         </div>
       </div>
