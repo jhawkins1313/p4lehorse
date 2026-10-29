@@ -54,21 +54,13 @@ export const SiteSettings: GlobalConfig = {
         {
           label: 'Playlist',
           description:
-            'The P4LEHORSE PICKS block at the foot of the homepage. The carousel fills itself from the playlist; everything here is the pitch around it.',
+            'The P4LEHORSE PICKS block at the foot of the homepage. The carousel fills itself from the playlist, and the artwork is committed to the repo, so this is only where the playlist lives.',
           fields: [
             {
               name: 'playlistHeading',
               type: 'text',
               defaultValue: 'P4LEHORSE PICKS',
               validate: noEmDash,
-            },
-            {
-              name: 'playlistBlurb',
-              type: 'textarea',
-              maxLength: 300,
-              validate: noEmDash,
-              defaultValue:
-                'What is actually on while the next reviews get written. Metal, hardcore, synth and the stranger edges, updated as records land.',
             },
             {
               name: 'playlistUrl',
@@ -86,15 +78,6 @@ export const SiteSettings: GlobalConfig = {
               admin: {
                 description:
                   'The value after "list=" in that URL. This is what the carousel reads to find the most recent additions.',
-              },
-            },
-            {
-              name: 'playlistCover',
-              type: 'upload',
-              relationTo: 'media',
-              admin: {
-                description:
-                  'The playlist artwork. YouTube signs its own copy of this image so it cannot be linked to directly: save it off the playlist page and upload it here. Without one, the newest cover in the run stands in.',
               },
             },
           ],

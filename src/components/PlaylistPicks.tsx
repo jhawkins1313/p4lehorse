@@ -5,12 +5,21 @@ type Props = {
   tracks: PlaylistTrack[]
   url: string
   heading?: string | null
-  blurb?: string | null
-  cover?: any
 }
 
 /** Seconds of travel per cover. Constant speed whatever the run length is. */
 const SECONDS_PER_COVER = 5
+
+/**
+ * The playlist artwork, committed rather than uploaded. It is a fixed piece of
+ * P4LEHORSE branding, not editorial, and it was previously an upload field with
+ * a fallback to the newest sleeve in the run. That meant the block shipped
+ * showing somebody's album cover until a human remembered to upload this file
+ * into the production Media library, which is a separate database from any
+ * local one. Holding it in the repo is what makes the block correct the moment
+ * it deploys.
+ */
+const COVER_SRC = '/images/p4lehorse-picks-cover-480.jpg'
 
 /**
  * P4LEHORSE PICKS. The standing listening rotation, at the foot of the homepage
@@ -22,13 +31,10 @@ const SECONDS_PER_COVER = 5
  * that holds the run twice over, and everything clickable points at the
  * playlist.
  */
-export const PlaylistPicks = ({ tracks, url, heading, blurb, cover }: Props) => {
+export const PlaylistPicks = ({ tracks, url, heading }: Props) => {
   if (!tracks.length || !url) return null
 
   const title = heading || 'P4LEHORSE PICKS'
-  const uploaded = cover?.sizes?.square?.url || cover?.url || null
-  const coverSrc = uploaded || tracks[0].art
-  const coverAlt = cover?.alt || `Playlist artwork for ${title}`
 
   // Twice through. The animation travels exactly the width of one run, so the
   // frame it loops back to is identical to the one it left and nothing snaps.
@@ -40,18 +46,13 @@ export const PlaylistPicks = ({ tracks, url, heading, blurb, cover }: Props) => 
 
       <div className="ph-container">
         <div className="ph-picks__head">
-          {/* An uploaded cover is already square and is left alone. A borrowed
-              YouTube thumbnail is not, so it gets the same zoom as the run. */}
-          <span className={`ph-picks__frame${uploaded ? '' : ' ph-picks__frame--yt'}`}>
-            <img src={coverSrc} alt={coverAlt} width={1200} height={1200} />
+          {/* Already square, so none of the crop the borrowed thumbnails need. */}
+          <span className="ph-picks__frame">
+            <img src={COVER_SRC} alt={`Playlist artwork for ${title}`} width={480} height={480} />
           </span>
           <div>
             <p className="ph-eyebrow">In rotation</p>
             <h2 className="ph-h2 ph-picks__title">{title}</h2>
-            <p className="ph-lede">
-              {blurb ||
-                'What is actually on while the next reviews get written. Metal, hardcore, synth and the stranger edges, updated as records land.'}
-            </p>
             <p className="ph-picks__actions">
               <a
                 className="ph-btn ph-btn--primary"
