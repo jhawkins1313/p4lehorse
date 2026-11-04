@@ -23,7 +23,18 @@ export type PlaylistTrack = {
  */
 export const PICKS_PLAYLIST_ID = 'PLKV3QunHgQOQ'
 export const PICKS_PLAYLIST_URL = `https://music.youtube.com/playlist?list=${PICKS_PLAYLIST_ID}`
-export const PICKS_LIMIT = 15
+
+/**
+ * How much of the playlist to read, and how much of it ends up on screen.
+ *
+ * The pool is one page of playlistItems, which is the most the API hands back
+ * in a single call. The rotation is drawn from that pool at render time, and
+ * its length is itself random inside the range, so two rebuilds of the
+ * homepage do not produce a carousel of identical length and order.
+ */
+export const PICKS_POOL_LIMIT = 50
+export const PICKS_ROTATION_MIN = 20
+export const PICKS_ROTATION_MAX = 25
 
 /**
  * YouTube centres the square album art of a topic upload inside a 4:3 frame,
@@ -83,7 +94,7 @@ const GONE = ['private video', 'deleted video']
  */
 export const getPlaylistTracks = async (
   playlistId: string = PICKS_PLAYLIST_ID,
-  limit: number = PICKS_LIMIT,
+  limit: number = PICKS_POOL_LIMIT,
 ): Promise<PlaylistTrack[]> => {
   const key = process.env.YOUTUBE_API_KEY
   if (!key || !playlistId) return SNAPSHOT.slice(0, limit)
@@ -124,4 +135,98 @@ export const getPlaylistTracks = async (
   } catch {
     return SNAPSHOT.slice(0, limit)
   }
+}
+
+/**
+ * The album a track belongs to, as far as anything here can know it.
+ *
+ * playlistItems carries no album: the Data API exposes none of YouTube Music's
+ * release metadata, so there is nothing to read even with a second call. The
+ * topic channel is the closest thing in the payload, and it is a safe key for
+ * this job because every track off one album shares an artist. Spacing by
+ * artist therefore guarantees the rule the block needs and then some: two
+ * sleeves from one album can never land side by side, and neither can two
+ * different albums by the same act, which read as a repeat anyway at carousel
+ * size.
+ */
+const albumKey = (item: PlaylistTrack): string =>
+  item.artist.trim().toLowerCase() || item.videoId
+
+/** Fisher-Yates on a copy. */
+const shuffled = <T,>(items: T[]): T[] => {
+  const out = [...items]
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const held = out[i]
+    out[i] = out[j]
+    out[j] = held
+  }
+  return out
+}
+
+/**
+ * Deal a run of `target` covers out of the pool with no album twice in a row.
+ *
+ * The playlist is shorter than the run, so tracks do repeat, which is fine; the
+ * constraint is adjacency. Each slot is filled at random from the candidates
+ * whose album is not the one just placed, preferring the tracks used fewest
+ * times so far. That preference is what stops the run leaning on half a dozen
+ * favourites: everything in the playlist gets a first airing before anything
+ * gets a second.
+ *
+ * The last slot also avoids the first album, because the strip renders the run
+ * twice and loops, so the end of a pass sits directly against its start.
+ *
+ * A pool with only one album in it has no legal ordering. That returns the
+ * shuffled pool rather than nothing, since a carousel that repeats an artist
+ * still beats an empty block.
+ */
+const buildRotation = (pool: PlaylistTrack[], target: number): PlaylistTrack[] => {
+  if (pool.length < 2) return [...pool]
+
+  const albums = new Set(pool.map(albumKey))
+  if (albums.size < 2) return shuffled(pool).slice(0, target)
+
+  const plays = new Map<string, number>()
+  const run: PlaylistTrack[] = []
+
+  while (run.length < target) {
+    const previous = run.length ? albumKey(run[run.length - 1]) : null
+    const opening = run.length ? albumKey(run[0]) : null
+    const closing = run.length === target - 1
+
+    const legal = pool.filter((item) => albumKey(item) !== previous)
+    // Preferred: also clear of the loop seam. If the pool cannot manage both,
+    // the seam gives way. A clash there is one frame of the animation, where a
+    // run cut short is visible for the whole of it.
+    const seamClear = closing ? legal.filter((item) => albumKey(item) !== opening) : legal
+    const candidates = seamClear.length ? seamClear : legal
+
+    const fewest = Math.min(...candidates.map((item) => plays.get(item.videoId) || 0))
+    const freshest = candidates.filter((item) => (plays.get(item.videoId) || 0) === fewest)
+
+    const pick = freshest[Math.floor(Math.random() * freshest.length)]
+    run.push(pick)
+    plays.set(pick.videoId, fewest + 1)
+  }
+
+  return run
+}
+
+/**
+ * What the homepage block renders: a fresh 20 to 25 cover run off the playlist,
+ * shuffled, with no album sitting next to itself.
+ *
+ * The order is decided here rather than in the component, so the carousel stays
+ * a pure render of what it is handed. The page revalidates on its own clock and
+ * the playlist read is cached for an hour, so this reshuffles on a rebuild
+ * without spending another quota unit.
+ */
+export const getPicksRotation = async (
+  playlistId: string = PICKS_PLAYLIST_ID,
+): Promise<PlaylistTrack[]> => {
+  const pool = await getPlaylistTracks(playlistId)
+  const span = PICKS_ROTATION_MAX - PICKS_ROTATION_MIN + 1
+  const target = PICKS_ROTATION_MIN + Math.floor(Math.random() * span)
+  return buildRotation(pool, target)
 }

@@ -4,7 +4,7 @@ import { PostGrid } from '../../components/PostCard'
 import { Subscribe } from '../../components/Subscribe'
 import { PlaylistPicks } from '../../components/PlaylistPicks'
 import { FORMAT_LABELS, formatDate, isoDate } from '../../lib/site'
-import { getPlaylistTracks, PICKS_PLAYLIST_ID, PICKS_PLAYLIST_URL } from '../../lib/youtube'
+import { getPicksRotation, PICKS_PLAYLIST_ID, PICKS_PLAYLIST_URL } from '../../lib/youtube'
 
 export const revalidate = 60
 
@@ -31,7 +31,7 @@ export default async function HomePage() {
   // under the settings rather than a repeat of the field defaults: an editor
   // can empty a text field, and the block has to survive that with its link
   // still pointing somewhere real.
-  const picks = await getPlaylistTracks(settings?.playlistId || PICKS_PLAYLIST_ID)
+  const picks = await getPicksRotation(settings?.playlistId || PICKS_PLAYLIST_ID)
 
   return (
     <>
