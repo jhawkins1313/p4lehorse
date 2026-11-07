@@ -230,3 +230,118 @@ export const getPicksRotation = async (
   const target = PICKS_ROTATION_MIN + Math.floor(Math.random() * span)
   return buildRotation(pool, target)
 }
+
+// --- The embedded player -----------------------------------------------------
+
+/**
+ * A YouTube Music Pick, reduced to the two ids the embed needs.
+ *
+ * YouTube Music has no player of its own to embed: music.youtube.com serves no
+ * iframe and refuses to be framed. What it hands out are ids, and the standard
+ * YouTube player is the only way to put that audio on the page. Same track,
+ * same OLAK5uy_ album playlists, a video shaped frame showing the topic
+ * upload's cover art.
+ */
+export type YouTubeRef = { videoId: string | null; listId: string | null }
+
+/** Video ids are 11 characters. Anything else is somebody's typo. */
+const VIDEO_ID = /^[\w-]{11}$/
+const LIST_ID = /^[\w-]{12,}$/
+/** OLAK5uy_ is an album, PL a playlist, RD a radio mix. */
+const BARE_LIST_ID = /^(OLAK5uy_|PL|RD|LL|UU|FL)[\w-]{10,}$/
+
+const EMBED_HOSTS = [
+  'youtube.com',
+  'music.youtube.com',
+  'm.youtube.com',
+  'youtube-nocookie.com',
+  'youtu.be',
+]
+
+/** Path segments that are followed by a video id rather than being one. */
+const ID_PREFIXES = ['embed', 'shorts', 'live', 'v']
+
+/**
+ * Anything an editor is likely to paste, down to ids. Editors copy the share
+ * link and nothing else, so this has to take every shape YouTube hands out:
+ *
+ *   music.youtube.com/watch?v=ID&list=OLAK5uy_ID   a track inside its album
+ *   music.youtube.com/playlist?list=OLAK5uy_ID     a whole album
+ *   youtube.com/watch?v=ID, youtu.be/ID, /shorts/  the ordinary site
+ *   ID                                             a bare id, pasted alone
+ *
+ * Returns null for anything it cannot embed, which is what the field's
+ * validation reports back to the editor.
+ */
+export const parseYouTubeRef = (input?: string | null): YouTubeRef | null => {
+  const raw = (input || '').trim()
+  if (!raw) return null
+
+  if (VIDEO_ID.test(raw)) return { videoId: raw, listId: null }
+  if (BARE_LIST_ID.test(raw)) return { videoId: null, listId: raw }
+
+  let url: URL
+  try {
+    url = new URL(raw.startsWith('http') ? raw : `https://${raw}`)
+  } catch {
+    return null
+  }
+
+  const host = url.hostname.replace(/^www\./, '')
+  if (!EMBED_HOSTS.includes(host)) return null
+
+  let videoId = url.searchParams.get('v')
+
+  if (!videoId) {
+    const path = url.pathname.split('/').filter(Boolean)
+    const last = path[path.length - 1] || ''
+    const prefix = path[path.length - 2] || ''
+    if (host === 'youtu.be' && VIDEO_ID.test(last)) videoId = last
+    else if (ID_PREFIXES.includes(prefix) && VIDEO_ID.test(last)) videoId = last
+  }
+
+  if (videoId && !VIDEO_ID.test(videoId)) videoId = null
+
+  const list = url.searchParams.get('list')
+  const listId = list && LIST_ID.test(list) ? list : null
+
+  if (!videoId && !listId) return null
+  return { videoId, listId }
+}
+
+/**
+ * The player's chrome is YouTube's and takes no palette: there is no bgcol to
+ * set, the way bandcampEmbedSrc() sets one. color=white is the only choice that
+ * is not YouTube red, so the progress bar does not fight the magenta.
+ *
+ * youtube-nocookie.com is the host because the Pick sits at the foot of a
+ * review, where nobody asked to be tracked to read it.
+ */
+export const youtubeEmbedSrc = (ref: YouTubeRef): string => {
+  const params = ['rel=0', 'playsinline=1', 'color=white', 'modestbranding=1']
+  if (ref.listId) params.push(`list=${ref.listId}`)
+  const target = ref.videoId || 'videoseries'
+  return `https://www.youtube-nocookie.com/embed/${target}?${params.join('&')}`
+}
+
+/** Where the footer line sends people: Music, not the video site. */
+export const youtubeMusicUrl = (ref: YouTubeRef): string => {
+  if (ref.videoId) {
+    const list = ref.listId ? `&list=${ref.listId}` : ''
+    return `https://music.youtube.com/watch?v=${ref.videoId}${list}`
+  }
+  return `https://music.youtube.com/playlist?list=${ref.listId}`
+}
+
+/**
+ * Field level validation for the paste a link field. An unparseable link is
+ * caught in the admin, where somebody can fix it, rather than rendering as a
+ * silently missing player on a published review.
+ */
+export const validateYouTubeUrl = (value: unknown): true | string => {
+  if (value === null || value === undefined || value === '') return true
+  if (typeof value !== 'string' || !parseYouTubeRef(value)) {
+    return 'That is not a link this can embed. Paste the share link from YouTube Music, e.g. https://music.youtube.com/watch?v=dQw4w9WgXcQ'
+  }
+  return true
+}

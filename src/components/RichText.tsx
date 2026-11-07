@@ -2,16 +2,20 @@ import {
   RichText as LexicalRichText,
   type JSXConvertersFunction,
 } from '@payloadcms/richtext-lexical/react'
-import { Bandcamp } from './Bandcamp'
+import { Pick } from './Pick'
 
 const converters: JSXConvertersFunction = ({ defaultConverters }) => ({
   ...defaultConverters,
   blocks: {
+    // Keyed by block slug, which is still 'bandcamp' now that the block takes
+    // YouTube Music too. See the note in blocks/MusicBlock.ts.
     bandcamp: ({ node }: any) => (
-      <Bandcamp
+      <Pick
+        platform={node.fields.platform}
         albumId={node.fields.albumId}
         trackId={node.fields.trackId}
         url={node.fields.url}
+        youtubeUrl={node.fields.youtubeUrl}
         label={node.fields.label}
         eyebrow="Listen"
       />

@@ -58,8 +58,9 @@ that does not have your new column.
 | **Users** | Writers, editors, admins. |
 
 An article's fields sit in three tabs. **Article** is the headline, excerpt and body.
-**Record** is the album metadata, and reviews are the only format that needs it. **Bandcamp**
-is the album ID and pull quote for the player block.
+**Record** is the album metadata, and reviews are the only format that needs it. **The Pick**
+is the player block that closes a review: a platform, the ID or link it needs, and a pull
+quote.
 
 Drafts autosave. Publishing is a separate action, so nothing goes live by accident. Set
 `publishedAt` to a future time to schedule a piece.
@@ -80,6 +81,13 @@ Four things in the brand kit are easy to break by hand, so the code holds them i
 URL parameters, `bgcol` and `linkcol`, and the kit warns that every embed has to be checked
 by hand. Here it is built once in `src/lib/site.ts` from the token values, so no editor ever
 types a color and no embed can drift. Editors paste an album ID; that is all.
+
+A Pick can play from YouTube Music instead, for the artists who are not on Bandcamp. Choose
+the platform and paste the share link; `src/lib/youtube.ts` takes the ids out of it. That arm
+is the ordinary YouTube player, because YouTube Music has none of its own to embed, so it is
+a 16:9 frame in YouTube's own colors rather than the slim Bandcamp bar. A link carrying an
+album plays the record through, a plain track link plays the one song, and the line underneath
+says which.
 
 **No em dashes.** House style, and a `validate` on every copy field rejects them with a note
 explaining why. Titles, excerpts, pull quotes, page ledes, site settings.
@@ -115,9 +123,9 @@ src/
     (payload)/      the admin mount, do not rename these files
     api/subscribe/  newsletter signup
   collections/      Payload schema
-  blocks/           Bandcamp and pull quote, droppable into any article body
+  blocks/           music player and pull quote, droppable into any article body
   components/       React components for the front end
-  lib/              queries, formatting, the Bandcamp URL builder
+  lib/              queries, formatting, the Bandcamp and YouTube URL builders
   styles/           brand kit CSS, unmodified except for the font paths
   seed/             starter content
 public/
@@ -209,8 +217,8 @@ curl -s https://<host>/robots.txt | grep Sitemap
 The block at the foot of the homepage. It shows the playlist cover, two links out, and a
 carousel of the fifteen most recent additions drifting past. It replaced the single Bandcamp
 Pick that used to sit there: one album is a recommendation, a playlist is a rotation and it
-is something a reader can subscribe to. The Bandcamp player itself is untouched and still
-runs inside articles.
+is something a reader can subscribe to. The player block itself is untouched and still runs
+inside articles, on Bandcamp or on YouTube Music.
 
 **Settings, Site settings, Playlist** holds the heading, the link and the playlist id. That
 is all of it. The carousel fills itself and the artwork is committed, so there is nothing to

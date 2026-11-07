@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 
 import { getPostBySlug, getPosts } from '../../../../lib/queries'
 import { RichText } from '../../../../components/RichText'
-import { Bandcamp } from '../../../../components/Bandcamp'
+import { Pick } from '../../../../components/Pick'
 import { PostGrid } from '../../../../components/PostCard'
 import { Subscribe } from '../../../../components/Subscribe'
 import {
@@ -219,12 +219,16 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           {/* The Pick closes the review it belongs to, so it stays inside the
               article section. In its own ph-section the two sets of block
               padding stacked up and left it 160px clear of the byline. */}
-          {post.bandcamp?.albumId && (
+          {(post.bandcamp?.platform === 'youtube'
+            ? post.bandcamp?.youtubeUrl
+            : post.bandcamp?.albumId) && (
             <div className="ph-container ph-article-pick">
-              <Bandcamp
+              <Pick
+                platform={post.bandcamp.platform}
                 albumId={post.bandcamp.albumId}
                 trackId={post.bandcamp.trackId}
                 url={post.bandcamp.url}
+                youtubeUrl={post.bandcamp.youtubeUrl}
                 quote={post.bandcamp.quote}
                 label={
                   artist?.name && post.albumTitle

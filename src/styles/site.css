@@ -214,6 +214,19 @@
 
 .ph-article-pick .ph-bandcamp { margin-block: 0; }
 
+/* A YouTube Music Pick. YouTube has no slim audio player to embed, so this arm
+   of the block is the ordinary video frame and takes a 16:9 box rather than the
+   120px bar Bandcamp's own embed draws itself into. The two platforms give
+   different shaped players and the Pick does not pretend otherwise: cropping
+   this to Bandcamp's height clips YouTube's controls and the play target with
+   them. No new color, no new radius, the frame is the one .ph-bandcamp__player
+   already draws. */
+
+.ph-bandcamp__player--video iframe {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 /* --- Prose blocks inserted by the editor ------------------------------------ */
 
 .ph-prose .ph-bandcamp,

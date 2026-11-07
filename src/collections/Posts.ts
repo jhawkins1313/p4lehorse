@@ -5,7 +5,8 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import { slugField, noEmDash } from '../fields/slug'
-import { BandcampBlock } from '../blocks/BandcampBlock'
+import { validateYouTubeUrl } from '../lib/youtube'
+import { MusicBlock } from '../blocks/MusicBlock'
 import { PullQuoteBlock } from '../blocks/PullQuoteBlock'
 
 export const Posts: CollectionConfig = {
@@ -73,7 +74,7 @@ export const Posts: CollectionConfig = {
                 features: ({ defaultFeatures }) => [
                   ...defaultFeatures,
                   HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }),
-                  BlocksFeature({ blocks: [BandcampBlock, PullQuoteBlock] }),
+                  BlocksFeature({ blocks: [MusicBlock, PullQuoteBlock] }),
                 ],
               }),
               admin: {
@@ -128,11 +129,11 @@ export const Posts: CollectionConfig = {
             },
           ],
         },
-        // ------------------------------------------------------------ Bandcamp
+        // ------------------------------------------------------------ The Pick
         {
-          label: 'Bandcamp',
+          label: 'The Pick',
           description:
-            'The P4LEHORSE Pick block that sits under the review. The player colors are set from the brand tokens automatically, so there is nothing to keep in sync by hand.',
+            'The P4LEHORSE Pick block that sits under the review. Bandcamp when the record is there, YouTube Music when it is not. The Bandcamp player colors are set from the brand tokens automatically, so there is nothing to keep in sync by hand.',
           fields: [
             {
               name: 'bandcamp',
@@ -140,9 +141,23 @@ export const Posts: CollectionConfig = {
               label: false,
               fields: [
                 {
+                  name: 'platform',
+                  type: 'select',
+                  defaultValue: 'bandcamp',
+                  options: [
+                    { label: 'Bandcamp', value: 'bandcamp' },
+                    { label: 'YouTube Music', value: 'youtube' },
+                  ],
+                  admin: {
+                    description:
+                      'Where the Pick plays from. Bandcamp is the first choice because the money reaches the artist. YouTube Music is how an artist who is not on Bandcamp still gets heard.',
+                  },
+                },
+                {
                   name: 'albumId',
                   type: 'text',
                   admin: {
+                    condition: (_data, siblingData) => siblingData?.platform !== 'youtube',
                     description:
                       'The number after "album=" in the embed code Bandcamp gives you. Digits only.',
                   },
@@ -151,16 +166,29 @@ export const Posts: CollectionConfig = {
                   name: 'trackId',
                   type: 'text',
                   admin: {
+                    condition: (_data, siblingData) => siblingData?.platform !== 'youtube',
                     description:
                       'Optional. The number after "track=" if you want the player to open on a specific track.',
+                  },
+                },
+                {
+                  name: 'youtubeUrl',
+                  label: 'YouTube Music link',
+                  type: 'text',
+                  validate: validateYouTubeUrl,
+                  admin: {
+                    condition: (_data, siblingData) => siblingData?.platform === 'youtube',
+                    description:
+                      'Paste the share link and nothing else, e.g. https://music.youtube.com/watch?v=dQw4w9WgXcQ. A link carrying an album (list=OLAK5uy_...) plays the record through. A plain track link plays the one song.',
                   },
                 },
                 {
                   name: 'url',
                   type: 'text',
                   admin: {
+                    condition: (_data, siblingData) => siblingData?.platform !== 'youtube',
                     description:
-                      'The public album page, e.g. https://artist.bandcamp.com/album/record-name. Used for the "Hear the full album" line under the player.',
+                      'The public album page, e.g. https://artist.bandcamp.com/album/record-name. Used for the "Hear the full album" line under the player. A YouTube Pick needs nothing here; it builds that line from the link above.',
                   },
                 },
                 {

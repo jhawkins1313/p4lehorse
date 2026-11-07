@@ -191,6 +191,10 @@ export interface Post {
   coverArt?: (number | null) | Media;
   bandcamp?: {
     /**
+     * Where the Pick plays from. Bandcamp is the first choice because the money reaches the artist. YouTube Music is how an artist who is not on Bandcamp still gets heard.
+     */
+    platform?: ('bandcamp' | 'youtube') | null;
+    /**
      * The number after "album=" in the embed code Bandcamp gives you. Digits only.
      */
     albumId?: string | null;
@@ -199,7 +203,11 @@ export interface Post {
      */
     trackId?: string | null;
     /**
-     * The public album page, e.g. https://artist.bandcamp.com/album/record-name. Used for the "Hear the full album" line under the player.
+     * Paste the share link and nothing else, e.g. https://music.youtube.com/watch?v=dQw4w9WgXcQ. A link carrying an album (list=OLAK5uy_...) plays the record through. A plain track link plays the one song.
+     */
+    youtubeUrl?: string | null;
+    /**
+     * The public album page, e.g. https://artist.bandcamp.com/album/record-name. Used for the "Hear the full album" line under the player. A YouTube Pick needs nothing here; it builds that line from the link above.
      */
     url?: string | null;
     /**
@@ -557,8 +565,10 @@ export interface PostsSelect<T extends boolean = true> {
   bandcamp?:
     | T
     | {
+        platform?: T;
         albumId?: T;
         trackId?: T;
+        youtubeUrl?: T;
         url?: T;
         quote?: T;
       };

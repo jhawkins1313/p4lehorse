@@ -96,6 +96,28 @@ travels in the `bgcol` and `linkcol` URL parameters. `bandcampEmbedSrc()` in `sr
 builds them from the token values. Editors supply an album id and nothing else. Never hardcode
 a color into an embed.
 
+**The Pick plays from Bandcamp or YouTube Music, never both at once.** A `platform` select on
+the `bandcamp` group and on the inline block picks one arm, and the admin shows only that
+arm's fields. Bandcamp is the first choice; the YouTube arm exists so an artist who is not on
+Bandcamp can still be heard in the review.
+
+YouTube Music has no player of its own: `music.youtube.com` serves no iframe and refuses to be
+framed, so a YouTube Pick renders the standard player on `youtube-nocookie.com`. That frame is
+16:9 rather than Bandcamp's 120px bar and carries YouTube's own chrome, which takes no palette.
+`.ph-bandcamp__player--video` in `site.css` is the only thing that differs. Do not try to crop
+it to Bandcamp's height; it clips the controls.
+
+Editors paste a share link and `parseYouTubeRef()` in `src/lib/youtube.ts` takes the ids out of
+it, so the parsing, the embed src and the field validation all live in that one file. It is
+there rather than in `site.ts` because `site.ts` imports `@payload-config`, and a collection
+importing it back would be circular. A link carrying `list=` plays the album through and the
+footer line says so; without one it is a single song. A YouTube Pick ignores the `url` field,
+which is Bandcamp's, and builds its own way out.
+
+Several names still say Bandcamp alone and have to. The group is `bandcamp`, the block slug is
+`bandcamp`, and the CSS is `.ph-bandcamp`. The first two are the database and the lexical JSON
+of every player already saved; renaming either orphans existing content.
+
 **There is no rating field, anywhere.** By design. The About page rules out numerical scores
 and star ratings, the schema has nowhere to put one, and the review JSON-LD in
 `src/app/(frontend)/posts/[slug]/page.tsx` deliberately omits `reviewRating`. There is no news
