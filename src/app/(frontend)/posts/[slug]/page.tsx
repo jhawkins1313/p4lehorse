@@ -12,7 +12,10 @@ import {
   formatDate,
   isoDate,
   absoluteUrl,
+  OG_IMAGE,
+  SITE_NAME,
 } from '../../../../lib/site'
+import { articleNode, graph, postBreadcrumbNode } from '../../../../lib/schema'
 
 export const revalidate = 60
 export const dynamicParams = true
@@ -53,18 +56,23 @@ export async function generateMetadata({
     description: post.excerpt,
     openGraph: {
       type: 'article',
+      // Declaring openGraph here replaces the layout's rather than merging with
+      // it, so siteName has to be restated or the card loses it. The url has to
+      // be explicit too: Next emits no og:url from the canonical alone.
+      siteName: SITE_NAME,
+      url: absoluteUrl(`/posts/${post.slug}`),
       title,
       description: post.excerpt,
       publishedTime: post.publishedAt || undefined,
       images: image
         ? [{ url: absoluteUrl(image), width: 1200, height: 1200 }]
-        : [{ url: absoluteUrl('/images/p4lehorse-og-1200x630.png'), width: 1200, height: 630 }],
+        : [{ url: absoluteUrl(OG_IMAGE), width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description: post.excerpt,
-      images: [absoluteUrl(image || '/images/p4lehorse-og-1200x630.png')],
+      images: [absoluteUrl(image || OG_IMAGE)],
     },
     alternates: { canonical: absoluteUrl(`/posts/${post.slug}`) },
   }
@@ -92,27 +100,15 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     ? `More ${FORMAT_LABELS[post.format].toLowerCase()}s`
     : 'Latest'
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': post.format === 'review' ? 'Review' : 'Article',
-    headline: post.title,
-    description: post.excerpt,
-    datePublished: post.publishedAt,
-    author: author?.name ? { '@type': 'Person', name: author.name } : undefined,
-    publisher: { '@type': 'Organization', name: 'P4LEHORSE' },
-    ...(post.format === 'review' && post.albumTitle
-      ? {
-          itemReviewed: {
-            '@type': 'MusicAlbum',
-            name: post.albumTitle,
-            byArtist: artist?.name
-              ? { '@type': 'MusicGroup', name: artist.name }
-              : undefined,
-          },
-          // No reviewRating, on purpose. P4LEHORSE does not score records.
-        }
-      : {}),
-  }
+  const jsonLd = graph(
+    articleNode({
+      post,
+      artist,
+      author,
+      image: post.coverArt?.sizes?.square?.url || post.coverArt?.url,
+    }),
+    postBreadcrumbNode(post),
+  )
 
   return (
     <>

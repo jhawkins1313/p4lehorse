@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { PostGrid } from './PostCard'
+import { Masthead } from './Masthead'
+import { listingPath } from '../lib/site'
 
 type Props = {
   eyebrow?: string
@@ -23,9 +25,7 @@ export const Listing = ({
   children,
 }: Props) => (
   <>
-    <div className="ph-masthead ph-masthead--compact">
-      <img src="/images/p4lehorse-masthead-1592.png" alt="P4LEHORSE" width={1592} height={830} />
-    </div>
+    <Masthead compact />
 
     <section className="ph-section">
       <div className="ph-container">
@@ -45,10 +45,7 @@ export const Listing = ({
         {totalPages > 1 && (
           <nav className="ph-pager" aria-label="Pagination">
             {page > 1 ? (
-              <Link
-                className="ph-btn ph-btn--ghost"
-                href={page === 2 ? basePath : `${basePath}?page=${page - 1}`}
-              >
+              <Link className="ph-btn ph-btn--ghost" href={listingPath(basePath, page - 1)}>
                 Newer
               </Link>
             ) : (
@@ -58,7 +55,7 @@ export const Listing = ({
               Page {page} of {totalPages}
             </span>
             {page < totalPages ? (
-              <Link className="ph-btn ph-btn--ghost" href={`${basePath}?page=${page + 1}`}>
+              <Link className="ph-btn ph-btn--ghost" href={listingPath(basePath, page + 1)}>
                 More
               </Link>
             ) : (

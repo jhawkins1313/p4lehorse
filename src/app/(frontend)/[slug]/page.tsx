@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getPageBySlug } from '../../../lib/queries'
-import { payloadClient, absoluteUrl } from '../../../lib/site'
+import { payloadClient, absoluteUrl, siteOpenGraph } from '../../../lib/site'
 import { RichText } from '../../../components/RichText'
 
 export const revalidate = 60
@@ -35,6 +35,11 @@ export async function generateMetadata({
     title: page.title,
     description: page.lede || undefined,
     alternates: { canonical: absoluteUrl(`/${page.slug}`) },
+    openGraph: siteOpenGraph({
+      path: `/${page.slug}`,
+      title: page.title,
+      description: page.lede || undefined,
+    }),
   }
 }
 
