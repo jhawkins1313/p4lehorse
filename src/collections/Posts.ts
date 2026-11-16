@@ -47,7 +47,7 @@ export const Posts: CollectionConfig = {
       validate: noEmDash,
       admin: { description: 'The headline. Sentence case reads better at display sizes.' },
     },
-    slugField('title'),
+    ...slugField('title'),
     {
       type: 'tabs',
       tabs: [

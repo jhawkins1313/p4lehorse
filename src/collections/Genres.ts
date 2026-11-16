@@ -23,7 +23,7 @@ export const Genres: CollectionConfig = {
       required: true,
       admin: { description: 'Sentence case. Only the first word and proper nouns take a capital.' },
     },
-    slugField('name'),
+    ...slugField('name'),
     {
       name: 'description',
       type: 'textarea',

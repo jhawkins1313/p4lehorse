@@ -144,9 +144,13 @@ export interface Post {
    */
   title: string;
   /**
-   * Leave blank and it fills itself in from the title.
+   * Fills itself in from the title and keeps up with it until the piece is published. To write your own, tick the box below first.
    */
   slug?: string | null;
+  /**
+   * Off, and the slug tracks the title until the piece is published. Tick it before typing a slug of your own, or the next autosave will write over it.
+   */
+  slugLock?: boolean | null;
   /**
    * One or two sentences from the piece, cut at a natural stop. Used on cards, in search results, and as the meta description fallback.
    */
@@ -243,9 +247,13 @@ export interface Artist {
    */
   name: string;
   /**
-   * Leave blank and it fills itself in from the title.
+   * Fills itself in from the title and keeps up with it until the piece is published. To write your own, tick the box below first.
    */
   slug?: string | null;
+  /**
+   * Off, and the slug tracks the title until the piece is published. Tick it before typing a slug of your own, or the next autosave will write over it.
+   */
+  slugLock?: boolean | null;
   /**
    * Where the artist is based.
    */
@@ -345,9 +353,13 @@ export interface Genre {
    */
   name: string;
   /**
-   * Leave blank and it fills itself in from the title.
+   * Fills itself in from the title and keeps up with it until the piece is published. To write your own, tick the box below first.
    */
   slug?: string | null;
+  /**
+   * Off, and the slug tracks the title until the piece is published. Tick it before typing a slug of your own, or the next autosave will write over it.
+   */
+  slugLock?: boolean | null;
   /**
    * One or two sentences. Shown at the top of the genre page.
    */
@@ -403,9 +415,13 @@ export interface Page {
   id: number;
   title: string;
   /**
-   * Leave blank and it fills itself in from the title.
+   * Fills itself in from the title and keeps up with it until the piece is published. To write your own, tick the box below first.
    */
   slug?: string | null;
+  /**
+   * Off, and the slug tracks the title until the piece is published. Tick it before typing a slug of your own, or the next autosave will write over it.
+   */
+  slugLock?: boolean | null;
   /**
    * Small uppercase line above the title. Optional.
    */
@@ -555,6 +571,7 @@ export interface PayloadMigration {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  slugLock?: T;
   excerpt?: T;
   content?: T;
   artist?: T;
@@ -588,6 +605,7 @@ export interface PostsSelect<T extends boolean = true> {
 export interface ArtistsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  slugLock?: T;
   country?: T;
   formed?: T;
   photo?: T;
@@ -609,6 +627,7 @@ export interface ArtistsSelect<T extends boolean = true> {
 export interface GenresSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  slugLock?: T;
   description?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -683,6 +702,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  slugLock?: T;
   eyebrow?: T;
   lede?: T;
   content?: T;
