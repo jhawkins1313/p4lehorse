@@ -21,7 +21,7 @@ export const Pages: CollectionConfig = {
   },
   fields: [
     { name: 'title', type: 'text', required: true, validate: noEmDash },
-    slugField('title'),
+    ...slugField('title'),
     {
       name: 'eyebrow',
       type: 'text',

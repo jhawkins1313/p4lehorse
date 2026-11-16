@@ -150,3 +150,51 @@ export const searchPosts = async (q: string): Promise<Docs> => {
     overrideAccess: false,
   })
 }
+
+export const getArtists = async (): Promise<Docs> => {
+  const payload = await payloadClient()
+  return payload.find({
+    collection: 'artists',
+    limit: 1000,
+    sort: 'name',
+    depth: 0,
+  })
+}
+
+/**
+ * Published post counts per genre and per artist, in one pass.
+ *
+ * The index pages need a count beside every hub and there are thirty or so of
+ * them between the two, so counting per hub would be thirty round trips for a
+ * page whose whole job is to be a list of links. It also decides what gets
+ * listed at all: a hub with nothing behind it is a thin page, and linking to one
+ * from an index and naming it in the sitemap is how a site accumulates them.
+ */
+export const getHubCounts = async (): Promise<{
+  byGenre: Record<string, number>
+  byArtist: Record<string, number>
+}> => {
+  const payload = await payloadClient()
+  const result = await payload.find({
+    collection: 'posts',
+    where: published,
+    limit: 1000,
+    depth: 0,
+    overrideAccess: false,
+  })
+
+  const byGenre: Record<string, number> = {}
+  const byArtist: Record<string, number> = {}
+
+  for (const post of result.docs as any[]) {
+    const artist = typeof post.artist === 'object' ? post.artist?.id : post.artist
+    if (artist) byArtist[artist] = (byArtist[artist] || 0) + 1
+
+    for (const genre of Array.isArray(post.genres) ? post.genres : []) {
+      const id = typeof genre === 'object' ? genre?.id : genre
+      if (id) byGenre[id] = (byGenre[id] || 0) + 1
+    }
+  }
+
+  return { byGenre, byArtist }
+}

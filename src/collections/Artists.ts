@@ -26,7 +26,7 @@ export const Artists: CollectionConfig = {
           'Exactly as the artist writes it. Alte Haas Grotesk has no Romanian, Polish, Czech, Hungarian, Turkish, Cyrillic or Greek glyphs, so those characters fall back to the next font in the stack. That is expected and correct.',
       },
     },
-    slugField('name'),
+    ...slugField('name'),
     {
       name: 'country',
       type: 'text',

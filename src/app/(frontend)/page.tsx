@@ -1,12 +1,21 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPosts, getSettings } from '../../lib/queries'
 import { PostGrid } from '../../components/PostCard'
 import { Subscribe } from '../../components/Subscribe'
 import { PlaylistPicks } from '../../components/PlaylistPicks'
-import { FORMAT_LABELS, formatDate, isoDate } from '../../lib/site'
+import { Masthead } from '../../components/Masthead'
+import { FORMAT_LABELS, absoluteUrl, formatDate, isoDate, siteOpenGraph } from '../../lib/site'
 import { getPicksRotation, PICKS_PLAYLIST_ID, PICKS_PLAYLIST_URL } from '../../lib/youtube'
 
 export const revalidate = 60
+
+// The homepage is the one URL with four live variants (apex and www, http and
+// https), so it is the one that most needs to name itself.
+export const metadata: Metadata = {
+  alternates: { canonical: absoluteUrl('/') },
+  openGraph: siteOpenGraph({ path: '/' }),
+}
 
 const BLANK =
   "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23121216'/%3E%3C/svg%3E"
@@ -36,9 +45,7 @@ export default async function HomePage() {
   return (
     <>
       {/* The engraving already contains the wordmark. No live type over it. */}
-      <div className="ph-masthead">
-        <img src="/images/p4lehorse-masthead-1592.png" alt="P4LEHORSE" width={1592} height={830} />
-      </div>
+      <Masthead />
 
       <section className="ph-section">
         <div className="ph-container ph-container--prose">
@@ -70,6 +77,9 @@ export default async function HomePage() {
                   alt={featured.coverArt?.alt || ''}
                   width={1200}
                   height={1200}
+                  // Below the masthead and the hero on every viewport, so it was
+                  // only competing with the LCP image for priority.
+                  loading="lazy"
                 />
                 <div>
                   <p className="ph-eyebrow">{FORMAT_LABELS[featured.format]}</p>

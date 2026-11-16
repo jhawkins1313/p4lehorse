@@ -3,16 +3,17 @@
  * adapter is given `prodMigrations` in payload.config.ts. Regenerate after any
  * schema change:
  *
- *   npx payload migrate:create <name>
+ *   npm run migrate:create <name>
  *
- * then check the import and the entry below. The generator rewrites this file
- * and will drop this comment, so put it back when it does.
+ * then check the import and the entry below. The generator rewrites this file,
+ * dropping this comment and adding semicolons, so put it back when it does.
  */
 import * as migration_20260821_183527_initial from './20260821_183527_initial'
 import * as migration_20260824_142002_drop_sections from './20260824_142002_drop_sections'
 import * as migration_20261028_153701_picks_playlist from './20261028_153701_picks_playlist'
 import * as migration_20261029_002118_drop_playlist_blurb_and_cover from './20261029_002118_drop_playlist_blurb_and_cover'
 import * as migration_20261107_001130_add_youtube_pick from './20261107_001130_add_youtube_pick'
+import * as migration_20261116_184119_add_slug_lock from './20261116_184119_add_slug_lock'
 
 export const migrations = [
   {
@@ -39,5 +40,10 @@ export const migrations = [
     up: migration_20261107_001130_add_youtube_pick.up,
     down: migration_20261107_001130_add_youtube_pick.down,
     name: '20261107_001130_add_youtube_pick',
+  },
+  {
+    up: migration_20261116_184119_add_slug_lock.up,
+    down: migration_20261116_184119_add_slug_lock.down,
+    name: '20261116_184119_add_slug_lock',
   },
 ]

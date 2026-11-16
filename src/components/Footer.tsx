@@ -39,6 +39,12 @@ export const Footer = async () => {
               <li>
                 <Link href="/interviews">Interviews</Link>
               </li>
+              <li>
+                <Link href="/genre">Genres</Link>
+              </li>
+              <li>
+                <Link href="/artists">Artists</Link>
+              </li>
             </ul>
           </div>
 

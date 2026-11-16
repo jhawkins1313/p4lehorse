@@ -42,6 +42,12 @@ export const PlaylistPicks = ({ tracks, url, heading }: Props) => {
 
   return (
     <section className="ph-picks">
+      {/* The rotation borrows sixteen thumbnails from YouTube's image host. They
+          are lazy, but the first ones into view still paid for a cold connection
+          to a third party. Only this block uses it, so the hint lives here rather
+          than in the layout where every article would carry it. */}
+      <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="anonymous" />
+
       <hr className="ph-rule" />
 
       <div className="ph-container">
@@ -73,7 +79,13 @@ export const PlaylistPicks = ({ tracks, url, heading }: Props) => {
           <span className="ph-picks__hero">
             {/* Already square, so none of the crop the borrowed thumbnails need. */}
             <span className="ph-picks__frame ph-picks__frame--hero">
-              <img src={COVER_SRC} alt={`Playlist artwork for ${title}`} width={480} height={480} />
+              <img
+                src={COVER_SRC}
+                alt={`Playlist artwork for ${title}`}
+                width={480}
+                height={480}
+                loading="lazy"
+              />
             </span>
           </span>
 
