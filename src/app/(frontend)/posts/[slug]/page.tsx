@@ -14,6 +14,7 @@ import {
   absoluteUrl,
   OG_IMAGE,
   SITE_NAME,
+  metaDescription,
 } from '../../../../lib/site'
 import { articleNode, graph, postBreadcrumbNode } from '../../../../lib/schema'
 
@@ -53,7 +54,7 @@ export async function generateMetadata({
 
   return {
     title,
-    description: post.excerpt,
+    description: metaDescription(post.excerpt),
     openGraph: {
       type: 'article',
       // Declaring openGraph here replaces the layout's rather than merging with

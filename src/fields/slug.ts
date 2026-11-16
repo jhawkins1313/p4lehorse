@@ -26,11 +26,32 @@ export const slugField = (from = 'title'): Field => ({
   },
   hooks: {
     beforeValidate: [
-      ({ value, data }) => {
-        if (typeof value === 'string' && value.length > 0) return slugify(value)
+      ({ value, data, originalDoc }) => {
         const source = data?.[from]
-        if (typeof source === 'string' && source.length > 0) return slugify(source)
-        return value
+        const fromSource = typeof source === 'string' && source.length > 0 ? slugify(source) : ''
+        const current = typeof value === 'string' && value.length > 0 ? slugify(value) : ''
+
+        if (!current) return fromSource || value
+
+        // Once a document has been published the slug is its permalink and is
+        // never rewritten again, whatever happens to the title afterwards.
+        if (originalDoc?._status === 'published') return current
+
+        // Drafts autosave every 800ms, so the first save lands while the headline
+        // is still being typed and this hook fills the slug from half a title.
+        // It then saw a non-empty slug on every save after and left it alone, so
+        // the fragment became the permalink: /posts/the-in for "The Infinite
+        // Piano Hall", /posts/holy for "HOLY by xDOULOSx".
+        //
+        // A slug that is a leading fragment of the current title is that artefact
+        // rather than a decision, so while the piece is unpublished it is brought
+        // back up to date. A slug the editor actually chose is not a prefix of
+        // the title and survives untouched.
+        if (fromSource && fromSource !== current && fromSource.startsWith(current)) {
+          return fromSource
+        }
+
+        return current
       },
     ],
   },

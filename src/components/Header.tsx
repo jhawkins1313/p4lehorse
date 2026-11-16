@@ -6,6 +6,10 @@ import { usePathname } from 'next/navigation'
 const NAV = [
   { href: '/reviews', label: 'Reviews' },
   { href: '/interviews', label: 'Interviews' },
+  // The genre hubs are the pages a reader is most likely to be searching for, a
+  // scene plus the word reviews, and until now the only way into one was the tag
+  // list on an article that happened to carry it.
+  { href: '/genre', label: 'Genres' },
   { href: '/about', label: 'About' },
 ]
 

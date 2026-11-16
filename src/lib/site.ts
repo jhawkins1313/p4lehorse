@@ -116,7 +116,9 @@ export const listingMetadata = ({
 
   return {
     title: pagedTitle,
-    description,
+    // The meta description is trimmed, the card is not: a share preview has room
+    // for the whole sentence and a search result does not.
+    description: metaDescription(description),
     alternates: { canonical: absoluteUrl(path) },
     openGraph: siteOpenGraph({ path, title: pagedTitle, description }),
   }
@@ -141,4 +143,22 @@ export const pageFromSegments = (segments?: string[]): number | null => {
   if (segments.length !== 2 || segments[0] !== 'page') return null
   const page = Number(segments[1])
   return Number.isInteger(page) && page >= 2 ? page : null
+}
+
+/**
+ * Google renders about 155 characters of a description and cuts whatever is left
+ * mid word. The excerpt field allows 220 because it is card copy as well, where
+ * the extra room reads fine, so the trim belongs here rather than in the schema
+ * where it would shorten the cards too. Cuts on a word boundary, and only when
+ * there is something to cut.
+ */
+export const metaDescription = (text?: string | null): string | undefined => {
+  const value = text?.trim()
+  if (!value) return undefined
+  if (value.length <= 155) return value
+
+  const cut = value.slice(0, 155)
+  const lastSpace = cut.lastIndexOf(' ')
+  const trimmed = lastSpace > 120 ? cut.slice(0, lastSpace) : cut
+  return `${trimmed.replace(/[,;:.\s]+$/, '')}...`
 }

@@ -45,12 +45,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const genre = await findGenre(slug)
   if (!genre) return { title: 'That page is gone.' }
 
-  return listingMetadata({
-    basePath: `/genre/${genre.slug}`,
-    page: n,
-    title: genre.name,
-    description: genre.description || `${genre.name} coverage on P4LEHORSE.`,
-  })
+  const result = await getPosts({ genre: genre.id, limit: 1 })
+
+  return {
+    ...listingMetadata({
+      basePath: `/genre/${genre.slug}`,
+      page: n,
+      // The bare genre name was the whole title. What a reader actually searches
+      // is the scene plus the thing they want to read about it, so the title says
+      // that and the h1 stays the plain name it was designed as.
+      title: `${genre.name} reviews and interviews`,
+      description:
+        genre.description ||
+        `Album reviews, interviews and features filed under ${genre.name} at P4LEHORSE.`,
+    }),
+    // A hub with nothing behind it is a name and a masthead. It stays reachable
+    // and still passes link equity on, it just does not belong in an index.
+    ...(result.totalDocs === 0 ? { robots: { index: false, follow: true } } : {}),
+  }
 }
 
 export default async function GenrePage({ params }: Props) {

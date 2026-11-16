@@ -45,12 +45,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const artist = await findArtist(slug)
   if (!artist) return { title: 'That page is gone.' }
 
-  return listingMetadata({
-    basePath: `/artists/${artist.slug}`,
-    page: n,
-    title: artist.name,
-    description: artist.bio || `Everything P4LEHORSE has written about ${artist.name}.`,
-  })
+  const result = await getPosts({ artist: artist.id, limit: 1 })
+
+  return {
+    ...listingMetadata({
+      basePath: `/artists/${artist.slug}`,
+      page: n,
+      title: artist.name,
+      description: artist.bio || `Everything P4LEHORSE has written about ${artist.name}.`,
+    }),
+    // Same as the genres: an artist with nothing published is a name and a
+    // masthead, and indexing one is how thin pages accumulate.
+    ...(result.totalDocs === 0 ? { robots: { index: false, follow: true } } : {}),
+  }
 }
 
 export default async function ArtistPage({ params }: Props) {

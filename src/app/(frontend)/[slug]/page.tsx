@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getPageBySlug } from '../../../lib/queries'
-import { payloadClient, absoluteUrl, siteOpenGraph } from '../../../lib/site'
+import { payloadClient, absoluteUrl, siteOpenGraph, metaDescription } from '../../../lib/site'
 import { RichText } from '../../../components/RichText'
 
 export const revalidate = 60
@@ -33,7 +33,7 @@ export async function generateMetadata({
   if (!page) return { title: 'That page is gone.' }
   return {
     title: page.title,
-    description: page.lede || undefined,
+    description: metaDescription(page.lede),
     alternates: { canonical: absoluteUrl(`/${page.slug}`) },
     openGraph: siteOpenGraph({
       path: `/${page.slug}`,
