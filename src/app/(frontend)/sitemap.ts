@@ -2,7 +2,19 @@ import type { MetadataRoute } from 'next'
 import { payloadClient, SERVER_URL } from '../../lib/site'
 import { getHubCounts } from '../../lib/queries'
 
-export const revalidate = 3600
+/**
+ * Built per request, not cached for an hour.
+ *
+ * The Docker build renders against a throwaway database with no content in it,
+ * which is fine for a page that fills in when someone asks for it. A sitemap is
+ * different: on `revalidate = 3600` the prerendered empty one was served for a
+ * full hour after every deploy, advertising five URLs and no articles at all. A
+ * crawler that read it in that window was being told the other 49 had gone.
+ *
+ * Nothing fetches this often enough for per-request generation to matter, and a
+ * sitemap that is wrong for an hour is worse than one that costs five queries.
+ */
+export const dynamic = 'force-dynamic'
 
 const modified = (value?: string | null): Date | undefined =>
   value ? new Date(value) : undefined
